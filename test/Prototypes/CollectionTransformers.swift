@@ -72,7 +72,7 @@ internal func _splitRandomAccessIndexRange<
 public protocol CollectionBuilder {
   associatedtype Destination : Collection
     
-  typealias Element = Destination.Iterator.Element
+  associatedtype Element = Destination.Iterator.Element
 
   init()
 
@@ -474,7 +474,7 @@ final class _ForkJoinWorkerThread {
     }
     assert(_workDeque.isEmpty)
     assert(_submissionQueue.isEmpty)
-    _pool._totalThreads.fetchAndAdd(-1)
+    _ = _pool._totalThreads.fetchAndAdd(-1)
     print("_ForkJoinWorkerThread end")
   }
 
@@ -697,7 +697,7 @@ final public class ForkJoinPool {
       _pool: self, submissionQueue: submissionQueue, workDeque: workDeque)
     thread.startAsync()
     blockingBody()
-    _totalThreads.fetchAndAdd(1)
+    _ = _totalThreads.fetchAndAdd(1)
   }
 
   internal func _tryCreateThread(
@@ -720,7 +720,7 @@ final public class ForkJoinPool {
         _pool: self, submissionQueue: submissionQueue, workDeque: workDeque)
       thread.startAsync()
     } else {
-      _totalThreads.fetchAndAdd(-1)
+      _ = _totalThreads.fetchAndAdd(-1)
     }
     return true
   }
@@ -853,7 +853,7 @@ internal class _CollectionTransformerStep<PipelineInputElement_, OutputElement_>
   typealias PipelineInputElement = PipelineInputElement_
   typealias OutputElement = OutputElement_
 
-  func map<U>(_ transform: (OutputElement) -> U)
+  func map<U>(_ elementTransform: (OutputElement) -> U)
     -> _CollectionTransformerStep<PipelineInputElement, U> {
 
     fatalError("abstract method")
@@ -903,11 +903,11 @@ final internal class _CollectionTransformerStepCollectionSource<
 
   typealias InputElement = PipelineInputElement
 
-  override func map<U>(_ transform: (InputElement) -> U)
+  override func map<U>(_ elementTransform: (InputElement) -> U)
     -> _CollectionTransformerStep<PipelineInputElement, U> {
 
     return _CollectionTransformerStepOneToMaybeOne(self) {
-      transform($0)
+      elementTransform($0)
     }
   }
 
@@ -970,13 +970,13 @@ final internal class _CollectionTransformerStepOneToMaybeOne<
   let _input: InputStep
   let _transform: (InputElement) -> OutputElement?
 
-  init(_ input: InputStep, _ transform: (InputElement) -> OutputElement?) {
+  init(_ input: InputStep, _ elementTransform: (InputElement) -> OutputElement?) {
     self._input = input
-    self._transform = transform
+    self._transform = elementTransform
     super.init()
   }
 
-  override func map<U>(_ transform: (OutputElement) -> U)
+  override func map<U>(_ elementTransform: (OutputElement) -> U)
     -> _CollectionTransformerStep<PipelineInputElement, U> {
 
     // Let the closure below capture only one variable, not the whole `self`.
@@ -984,7 +984,7 @@ final internal class _CollectionTransformerStepOneToMaybeOne<
     return _CollectionTransformerStepOneToMaybeOne<PipelineInputElement, U, InputStep>(_input) {
       (input: InputElement) -> U? in
       if let e = localTransform(input) {
-        return transform(e)
+        return elementTransform(e)
       }
       return nil
     }
@@ -1050,10 +1050,10 @@ struct _ElementCollectorOneToMaybeOne<
 
   init(
     _ baseCollector: BaseCollector,
-    _ transform: (Element) -> BaseCollector.Element?
+    _ elementTransform: (Element) -> BaseCollector.Element?
   ) {
     self._baseCollector = baseCollector
-    self._transform = transform
+    self._transform = elementTransform
   }
 
   mutating func sizeHint(_ approximateSize: Int) {}
@@ -1256,12 +1256,12 @@ public struct CollectionTransformerPipeline<
   internal var _input: InputCollection
   internal var _step: _CollectionTransformerStep<InputCollection.Iterator.Element, T>
 
-  public func map<U>(_ transform: (T) -> U)
+  public func map<U>(_ elementTransform: (T) -> U)
     -> CollectionTransformerPipeline<InputCollection, U> {
 
     return CollectionTransformerPipeline<InputCollection, U>(
       _input: _input,
-      _step: _step.map(transform)
+      _step: _step.map(elementTransform)
     )
   }
 

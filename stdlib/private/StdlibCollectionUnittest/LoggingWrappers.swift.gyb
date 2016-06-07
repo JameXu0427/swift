@@ -222,10 +222,10 @@ public struct ${Self}<
   }
 
   public func map<T>(
-    _ transform: @noescape (Base.Iterator.Element) throws -> T
+    _ elementTransform: @noescape (Base.Iterator.Element) throws -> T
   ) rethrows -> [T] {
     Log.map[selfType] += 1
-    return try base.map(transform)
+    return try base.map(elementTransform)
   }
 
   public func filter(

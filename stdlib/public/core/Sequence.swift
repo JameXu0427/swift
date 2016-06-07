@@ -373,7 +373,7 @@ public protocol Sequence {
   /// - Returns: An array containing the transformed elements of this
   ///   sequence.
   func map<T>(
-    _ transform: @noescape (Iterator.Element) throws -> T
+    _ elementTransform: @noescape (Iterator.Element) throws -> T
   ) rethrows -> [T]
 
   /// Returns an array containing, in order, the elements of the sequence
@@ -708,13 +708,13 @@ extension Sequence {
   ///     let letterCounts = cast.map { $0.characters.count }
   ///     // 'letterCounts' == [6, 6, 3, 4]
   ///
-  /// - Parameter transform: A mapping closure. `transform` accepts an
+  /// - Parameter elementTransform: A mapping closure. `elementTransform` accepts an
   ///   element of this sequence as its parameter and returns a transformed
   ///   value of the same or of a different type.
   /// - Returns: An array containing the transformed elements of this
   ///   sequence.
   public func map<T>(
-    _ transform: @noescape (Iterator.Element) throws -> T
+    _ elementTransform: @noescape (Iterator.Element) throws -> T
   ) rethrows -> [T] {
     let initialCapacity = underestimatedCount
     var result = ContiguousArray<T>()
@@ -724,11 +724,11 @@ extension Sequence {
 
     // Add elements up to the initial capacity without checking for regrowth.
     for _ in 0..<initialCapacity {
-      result.append(try transform(iterator.next()!))
+      result.append(try elementTransform(iterator.next()!))
     }
     // Add remaining elements, if any.
     while let element = iterator.next() {
-      result.append(try transform(element))
+      result.append(try elementTransform(element))
     }
     return Array(result)
   }

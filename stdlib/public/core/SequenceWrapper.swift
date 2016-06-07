@@ -61,15 +61,15 @@ extension Sequence
   ///     let letterCounts = cast.map { $0.characters.count }
   ///     // 'letterCounts' == [6, 6, 3, 4]
   ///
-  /// - Parameter transform: A mapping closure. `transform` accepts an
+  /// - Parameter elementTransform: A mapping closure. `elementTransform` accepts an
   ///   element of this sequence as its parameter and returns a transformed
   ///   value of the same or of a different type.
   /// - Returns: An array containing the transformed elements of this
   ///   sequence.
   public func map<T>(
-    _ transform: @noescape (Base.Iterator.Element) throws -> T
+    _ elementTransform: @noescape (Base.Iterator.Element) throws -> T
   ) rethrows -> [T] {
-    return try _base.map(transform)
+    return try _base.map(elementTransform)
   }
 
   /// Returns an array containing, in order, the elements of the sequence

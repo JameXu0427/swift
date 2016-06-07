@@ -204,11 +204,11 @@ public struct ${Self}<
 extension LazySequenceProtocol {
   /// Returns a `LazyMapSequence` over this `Sequence`.  The elements of
   /// the result are computed lazily, each time they are read, by
-  /// calling `transform` function on a base element.
+  /// calling `elementTransform` function on a base element.
   public func map<U>(
-    _ transform: (Elements.Iterator.Element) -> U
+    _ elementTransform: (Elements.Iterator.Element) -> U
   ) -> LazyMapSequence<Self.Elements, U> {
-    return LazyMapSequence(_base: self.elements, transform: transform)
+    return LazyMapSequence(_base: self.elements, transform: elementTransform)
   }
 }
 
@@ -221,13 +221,13 @@ extension LazyCollectionProtocol
 {
   /// Returns a `LazyMapCollection` over this `Collection`.  The elements of
   /// the result are computed lazily, each time they are read, by
-  /// calling `transform` function on a base element.
+  /// calling `elementTransform` function on a base element.
   public func map<U>(
-    _ transform: (Elements.Iterator.Element) -> U
+    _ elementTransform: (Elements.Iterator.Element) -> U
   ) -> LazyMap${collectionForTraversal(Traversal)}<Self.Elements, U> {
     return LazyMap${collectionForTraversal(Traversal)}(
       _base: self.elements,
-      transform: transform)
+      transform: elementTransform)
   }
 }
 

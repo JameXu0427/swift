@@ -156,10 +156,12 @@ public enum Optional<Wrapped> : NilLiteralConvertible {
   /// - Parameter f: A closure that takes the unwrapped value of the instance.
   /// - Returns: The result of the given closure. If this instance is `nil`,
   ///   returns `nil`.
-  public func map<U>(_ f: @noescape (Wrapped) throws -> U) rethrows -> U? {
+  public func map<U>(
+    _ elementTransform: @noescape (Wrapped) throws -> U
+  ) rethrows -> U? {
     switch self {
     case .some(let y):
-      return .some(try f(y))
+      return .some(try elementTransform(y))
     case .none:
       return .none
     }
@@ -183,10 +185,10 @@ public enum Optional<Wrapped> : NilLiteralConvertible {
   /// - Parameter f: A closure that takes the unwrapped value of the instance.
   /// - Returns: The result of the given closure. If this instance is `nil`,
   ///   returns `nil`.
-  public func flatMap<U>(_ f: @noescape (Wrapped) throws -> U?) rethrows -> U? {
+  public func flatMap<U>(_ elementTransform: @noescape (Wrapped) throws -> U?) rethrows -> U? {
     switch self {
     case .some(let y):
-      return try f(y)
+      return try elementTransform(y)
     case .none:
       return .none
     }

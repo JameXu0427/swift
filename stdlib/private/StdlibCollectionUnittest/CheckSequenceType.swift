@@ -164,12 +164,12 @@ public struct FlatMapToOptionalTest {
   public init(
     _ expected: [Int32],
     _ sequence: [Int],
-    _ transform: (Int) -> Int32?,
+    _ elementTransform: (Int) -> Int32?,
     file: String = #file, line: UInt = #line
   ) {
     self.expected = expected
     self.sequence = sequence
-    self.transform = transform
+    self.transform = elementTransform
     self.loc = SourceLoc(file, line, comment: "test data")
   }
 }
@@ -230,12 +230,12 @@ public struct MapTest {
   public init(
     _ expected: [Int32],
     _ sequence: [Int],
-    _ transform: (Int) -> Int32,
+    _ elementTransform: (Int) -> Int32,
     file: String = #file, line: UInt = #line
   ) {
     self.expected = expected
     self.sequence = sequence
-    self.transform = transform
+    self.transform = elementTransform
     self.loc = SourceLoc(file, line, comment: "test data")
   }
 }

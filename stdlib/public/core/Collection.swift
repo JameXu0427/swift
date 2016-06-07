@@ -1262,13 +1262,13 @@ extension Collection {
   ///     let letterCounts = cast.map { $0.characters.count }
   ///     // 'letterCounts' == [6, 6, 3, 4]
   ///
-  /// - Parameter transform: A mapping closure. `transform` accepts an
+  /// - Parameter elementTransform: A mapping closure. `transform` accepts an
   ///   element of this sequence as its parameter and returns a transformed
   ///   value of the same or of a different type.
   /// - Returns: An array containing the transformed elements of this
   ///   sequence.
   public func map<T>(
-    _ transform: @noescape (Iterator.Element) throws -> T
+    _ elementTransform: @noescape (Iterator.Element) throws -> T
   ) rethrows -> [T] {
     let count: Int = numericCast(self.count)
     if count == 0 {
@@ -1281,7 +1281,7 @@ extension Collection {
     var i = self.startIndex
 
     for _ in 0..<count {
-      result.append(try transform(self[i]))
+      result.append(try elementTransform(self[i]))
       formIndex(after: &i)
     }
 

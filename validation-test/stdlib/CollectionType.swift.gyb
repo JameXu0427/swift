@@ -246,10 +246,10 @@ struct MinimalCollectionWith${Implementation}Map<Element>
   }
 
   func map<T>(
-    _ transform: @noescape (Element) throws -> T
+    _ elementTransform: @noescape (Element) throws -> T
   ) rethrows -> [T] {
     MinimalCollectionWithCustomMap.timesMapWasCalled += 1
-    return try _data.map(transform)
+    return try _data.map(elementTransform)
   }
 
 %   end
