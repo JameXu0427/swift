@@ -88,9 +88,9 @@ extension Sequence
   ///   whether the element should be included in the returned array.
   /// - Returns: An array of the elements that `includeElement` allowed.
   public func filter(
-    _ includeElement: @noescape (Base.Iterator.Element) throws -> Bool
+    suchThat isIncluded: @noescape (Base.Iterator.Element) throws -> Bool
   ) rethrows -> [Base.Iterator.Element] {
-    return try _base.filter(includeElement)
+    return try _base.filter(suchThat: isIncluded)
   }
   
   public func _customContainsEquatableElement(

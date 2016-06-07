@@ -751,7 +751,7 @@ self.test("\(testNamePrefix).remove(at:)/semantics") {
 //===----------------------------------------------------------------------===//
 
 self.test("\(testNamePrefix).removeFirst()/semantics") {
-  for test in removeFirstTests.filter({ $0.numberToRemove == 1 }) {
+  for test in removeFirstTests.filter(suchThat: { $0.numberToRemove == 1 }) {
     var c = makeWrappedCollection(test.collection.map(OpaqueValue.init))
     let removedElement = c.removeFirst()
     expectEqual(test.collection.first, extractValue(removedElement).value)
@@ -1213,7 +1213,7 @@ self.test("\(testNamePrefix).OperatorPlus") {
 //===----------------------------------------------------------------------===//
 
 self.test("\(testNamePrefix).removeLast()/whereIndexIsBidirectional/semantics") {
-  for test in removeLastTests.filter({ $0.numberToRemove == 1 }) {
+  for test in removeLastTests.filter(suchThat: { $0.numberToRemove == 1 }) {
     var c = makeWrappedCollection(test.collection)
     let removedElement = c.removeLast()
     expectEqual(

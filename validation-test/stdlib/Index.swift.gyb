@@ -62,7 +62,7 @@ Index.test(
   + "avoidsSuccessorAndPredecessor/dispatch"
 ) {
   for test in indexStepsFromTests.filter(
-    {$0.limit == nil && $0.distance >= 0}
+    suchThat: {$0.limit == nil && $0.distance >= 0}
   ) {
     let c = ${Collection}(Array(0..<10))
 
@@ -86,7 +86,7 @@ Index.test(
   + "avoidsSuccessorAndPredecessor/dispatch"
 ) {
   for test in indexStepsFromTests.filter(
-    {$0.limit != nil}
+    suchThat: {$0.limit != nil}
   ) {
     let c = ${Collection}(Array(0..<10))
 

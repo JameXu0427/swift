@@ -110,10 +110,10 @@ struct MinimalCollectionWith${Implementation}Filter<Element>
   }
 
   func filter(
-    _ transform: @noescape (Element) throws -> Bool
+    suchThat isIncluded: @noescape (Element) throws -> Bool
   ) rethrows -> [Element] {
     MinimalCollectionWithCustomFilter.timesFilterWasCalled += 1
-    return try _data.filter(transform)
+    return try _data.filter(suchThat: isIncluded)
   }
 
 %   end
@@ -124,27 +124,27 @@ struct MinimalCollectionWith${Implementation}Filter<Element>
 
 func callStaticCollectionFilter(
   _ sequence: MinimalCollectionWithDefaultFilter<OpaqueValue<Int>>,
-  includeElement: @noescape (OpaqueValue<Int>) -> Bool
+  suchThat isIncluded: @noescape (OpaqueValue<Int>) -> Bool
 ) -> [OpaqueValue<Int>] {
-  var result = sequence.filter(includeElement)
+  var result = sequence.filter(suchThat: isIncluded)
   expectType([OpaqueValue<Int>].self, &result)
   return result
 }
 
 func callStaticCollectionFilter(
   _ sequence: MinimalCollectionWithCustomFilter<OpaqueValue<Int>>,
-  includeElement: @noescape (OpaqueValue<Int>) -> Bool
+  suchThat isIncluded: @noescape (OpaqueValue<Int>) -> Bool
 ) -> [OpaqueValue<Int>] {
-  var result = sequence.filter(includeElement)
+  var result = sequence.filter(suchThat: isIncluded)
   expectType([OpaqueValue<Int>].self, &result)
   return result
 }
 
 func callGenericCollectionFilter<S : Collection>(
   _ sequence: S,
-  includeElement: @noescape (S.Iterator.Element) -> Bool
+  suchThat isIncluded: @noescape (S.Iterator.Element) -> Bool
 ) -> [S.Iterator.Element] {
-  var result = sequence.filter(includeElement)
+  var result = sequence.filter(suchThat: isIncluded)
   expectType(Array<S.Iterator.Element>.self, &result)
   return result
 }

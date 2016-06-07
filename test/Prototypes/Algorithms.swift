@@ -446,15 +446,15 @@ suite.test("stablePartition") {
           var r = b.stablyPartitionSubrange(p..<q, choosingStartGroupBy: f)
           expectEqual(b.prefix(upTo:p), prefix)
           expectEqual(b.suffix(from:q), suffix)
-          expectEqual(b[p..<r], ArraySlice(subrange.filter(f)))
-          expectEqual(b[r..<q], ArraySlice(subrange.filter(notf)))
+          expectEqual(b[p..<r], ArraySlice(subrange.filter(suchThat: f)))
+          expectEqual(b[r..<q], ArraySlice(subrange.filter(suchThat: notf)))
 
           b = a
           r = b.stablyPartitionSubrange(p..<q, choosingStartGroupBy: notf)
           expectEqual(b.prefix(upTo:p), prefix)
           expectEqual(b.suffix(from:q), suffix)
-          expectEqual(b[p..<r], ArraySlice(subrange.filter(notf)))
-          expectEqual(b[r..<q], ArraySlice(subrange.filter(f)))
+          expectEqual(b[p..<r], ArraySlice(subrange.filter(suchThat: notf)))
+          expectEqual(b[r..<q], ArraySlice(subrange.filter(suchThat: f)))
         }
       }
       
@@ -463,13 +463,14 @@ suite.test("stablePartition") {
         let notf = { !f($0) }
         var b = a
         var r = b.stablePartition(choosingStartGroupBy: f)
-        expectEqual(b.prefix(upTo: r), ArraySlice(a.filter(f)))
-        expectEqual(b.suffix(from: r), ArraySlice(a.filter(notf)))
+        expectEqual(
+          b.prefix(upTo: r), ArraySlice(a.filter(suchThat: f)))
+        expectEqual(b.suffix(from: r), ArraySlice(a.filter(suchThat: notf)))
 
         b = a
         r = b.stablePartition(choosingStartGroupBy: notf)
-        expectEqual(b.prefix(upTo: r), ArraySlice(a.filter(notf)))
-        expectEqual(b.suffix(from: r), ArraySlice(a.filter(f)))
+        expectEqual(b.prefix(upTo: r), ArraySlice(a.filter(suchThat: notf)))
+        expectEqual(b.suffix(from: r), ArraySlice(a.filter(suchThat: f)))
       }
     }
   }

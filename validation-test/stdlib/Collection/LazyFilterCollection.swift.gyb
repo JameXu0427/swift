@@ -101,7 +101,7 @@ CollectionTests.test("LazyFilterCollection instances (${traversal}${kind})") {
 % end
   }
   do {
-    let predicate: Int -> Bool = { $0 % 3 == 0 || $0 % 5 == 0 }
+    let predicate: (Int) -> Bool = { $0 % 3 == 0 || $0 % 5 == 0 }
 
     let base = randArray(500)
     var expected : [Int] = []
@@ -112,16 +112,17 @@ CollectionTests.test("LazyFilterCollection instances (${traversal}${kind})") {
 % if kind == 'Sequence':
     checkSequence(
       expected,
-      MinimalSequence(elements: base).lazy.filter(predicate))
+      MinimalSequence(elements: base).lazy.filter(suchThat: predicate))
 % elif traversal == '' and kind == 'Collection':
     checkForwardCollection(
       expected,
-      MinimalCollection(elements: base).lazy.filter(predicate),
+      MinimalCollection(elements: base).lazy.filter(suchThat: predicate),
       sameValue: { $0 == $1 })
 % else:
     check${traversal}${kind}(
       expected,
-      Minimal${traversal}${kind}(elements: base).lazy.filter(predicate),
+      Minimal${traversal}${kind}(elements: base).lazy.filter(
+        suchThat: predicate),
       sameValue: { $0 == $1 })
 % end
   }

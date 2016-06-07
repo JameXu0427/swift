@@ -72,7 +72,9 @@ extension TestSuite {
     //===------------------------------------------------------------------===//
 
     self.test("\(testNamePrefix).removeFirst()/semantics") {
-      for test in removeFirstTests.filter({ $0.numberToRemove == 1 }) {
+      for test in removeFirstTests.filter(
+        suchThat: { $0.numberToRemove == 1 }
+      ) {
         var c = makeWrappedCollection(test.collection.map(OpaqueValue.init))
         let survivingIndices = _allIndices(
           into: c,
@@ -217,7 +219,7 @@ extension TestSuite {
     //===------------------------------------------------------------------===//
 
     self.test("\(testNamePrefix).removeLast()/semantics") {
-      for test in removeLastTests.filter({ $0.numberToRemove == 1 }) {
+      for test in removeLastTests.filter(suchThat: { $0.numberToRemove == 1 }) {
         var c = makeWrappedCollection(test.collection)
         let survivingIndices = _allIndices(
           into: c,
