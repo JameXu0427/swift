@@ -37,7 +37,7 @@
 ///     extension Sequence {
 ///       /// Returns an array containing the results of
 ///       ///
-///       ///   p.reduce(initial, combine: combine)
+///       ///   p.reduce(initial, accumulatingResultBy: combine)
 ///       ///
 ///       /// for each prefix `p` of `self`, in order from shortest to
 ///       /// longest.  For example:

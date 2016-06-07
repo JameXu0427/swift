@@ -1274,7 +1274,9 @@ public struct CollectionTransformerPipeline<
     )
   }
 
-  public func reduce<U>(_ initial: U, _ combine: (U, T) -> U) -> U {
+  public func reduce<U>(
+    _ initial: U, accumulatingResultBy combine: (U, T) -> U
+  ) -> U {
     return _runCollectionTransformer(_input, _step.reduce(initial, combine))
   }
 
@@ -1315,7 +1317,7 @@ t.test("fusion/map+reduce") {
   let result =
     transform(xs)
     .map { $0 * 2 }
-    .reduce(0, { $0 + $1 })
+    .reduce(0, accumulatingResultBy: { $0 + $1 })
   expectEqual(12, result)
 }
 
@@ -1324,7 +1326,7 @@ t.test("fusion/map+filter+reduce") {
   let result = transform(xs)
     .map { $0 * 2 }
     .where { $0 != 0 }
-    .reduce(0, { $0 + $1 })
+    .reduce(0, accumulatingResultBy: { $0 + $1 })
   expectEqual(12, result)
 }
 

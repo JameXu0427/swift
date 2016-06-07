@@ -476,7 +476,7 @@ public protocol StringLiteralConvertible
 /// array as a parameter:
 ///
 ///     func sum(values: [Int]) -> Int {
-///         return values.reduce(0, combine: +)
+///         return values.reduce(0, accumulatingResultBy: +)
 ///     }
 ///
 ///     let sumOfFour = sum([5, 10, 15, 20])
