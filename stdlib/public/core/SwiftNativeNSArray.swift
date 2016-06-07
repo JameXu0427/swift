@@ -42,7 +42,7 @@ internal class _SwiftNativeNSArrayWithContiguousStorage
 
   // Operate on our contiguous storage
   internal func withUnsafeBufferOfObjects<R>(
-    _ body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
   ) rethrows -> R {
     _sanityCheckFailure(
       "Must override withUnsafeBufferOfObjects in derived classes")
@@ -167,7 +167,7 @@ extension _SwiftNativeNSArrayWithContiguousStorage : _NSArrayCore {
   }
 
   internal override func withUnsafeBufferOfObjects<R>(
-    _ body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
   ) rethrows -> R {
     repeat {
       var buffer: UnsafeBufferPointer<AnyObject>
@@ -182,7 +182,7 @@ extension _SwiftNativeNSArrayWithContiguousStorage : _NSArrayCore {
       // If elements are bridged verbatim, the native buffer is all we
       // need, so return that.
       else if let buf = _nativeStorage._withVerbatimBridgedUnsafeBuffer(
-        { $0 }
+        invoke: { $0 }
       ) {
         buffer = buf
       }
@@ -233,9 +233,9 @@ internal class _ContiguousArrayStorageBase
 
 #if _runtime(_ObjC)
   internal override func withUnsafeBufferOfObjects<R>(
-    _ body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
   ) rethrows -> R {
-    if let result = try _withVerbatimBridgedUnsafeBuffer(body) {
+    if let result = try _withVerbatimBridgedUnsafeBuffer(invoke: body) {
       return result
     }
     _sanityCheckFailure(
@@ -246,7 +246,7 @@ internal class _ContiguousArrayStorageBase
   /// `UnsafeBufferPointer` to the elements and return the result.
   /// Otherwise, return `nil`.
   internal func _withVerbatimBridgedUnsafeBuffer<R>(
-    _ body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<AnyObject>) throws -> R
   ) rethrows -> R? {
     _sanityCheckFailure(
       "Concrete subclasses must implement _withVerbatimBridgedUnsafeBuffer")

@@ -134,11 +134,11 @@ ArrayTraps.test("unsafeLength")
   .code {
   var a = [ 42, 77, 88 ]
 
-  expectEqual(42, a.withUnsafeBufferPointer({ $0[0] }))
+  expectEqual(42, a.withUnsafeBufferPointer(invoke: { $0[0] }))
 
   expectCrashLater()
 
-  a.withUnsafeBufferPointer {
+  _ = a.withUnsafeBufferPointer {
     UnsafeBufferPointer(start: $0.baseAddress, count: -1)
   }
 }

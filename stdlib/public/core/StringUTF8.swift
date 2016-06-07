@@ -384,13 +384,13 @@ extension String {
   }
 
   internal func _withUnsafeBufferPointerToUTF8<R>(
-    _ body: @noescape (UnsafeBufferPointer<UTF8.CodeUnit>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<UTF8.CodeUnit>) throws -> R
   ) rethrows -> R {
     let ptr = _contiguousUTF8
     if ptr != nil {
       return try body(UnsafeBufferPointer(start: ptr, count: _core.count))
     }
-    return try nulTerminatedUTF8.withUnsafeBufferPointer(body)
+    return try nulTerminatedUTF8.withUnsafeBufferPointer(invoke: body)
   }
 
   /// Creates a string corresponding to the given sequence of UTF-8 code units.

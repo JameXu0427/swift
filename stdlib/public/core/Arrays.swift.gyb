@@ -1407,7 +1407,7 @@ extension ${Self} : RangeReplaceableCollection, _ArrayProtocol {
   //===--- algorithms -----------------------------------------------------===//
 
   public mutating func _withUnsafeMutableBufferPointerIfSupported<R>(
-    _ body: @noescape (UnsafeMutablePointer<Element>, Int) throws -> R
+    invoke body: @noescape (UnsafeMutablePointer<Element>, Int) throws -> R
   ) rethrows -> R? {
     return try withUnsafeMutableBufferPointer {
       (bufferPointer) -> R in
@@ -1513,9 +1513,9 @@ extension ${Self} {
   ///
   /// - SeeAlso: `withUnsafeMutableBufferPointer`, `UnsafeBufferPointer`
   public func withUnsafeBufferPointer<R>(
-    _ body: @noescape (UnsafeBufferPointer<Element>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<Element>) throws -> R
   ) rethrows -> R {
-    return try _buffer.withUnsafeBufferPointer(body)
+    return try _buffer.withUnsafeBufferPointer(invoke: body)
   }
 
   /// Calls the given closure with a pointer to the array's mutable contiguous
@@ -1557,7 +1557,7 @@ extension ${Self} {
   // function saving on allocating a closure context. This becomes unnecessary
   // once we allocate noescape closures on the stack.
   public mutating func withUnsafeMutableBufferPointer<R>(
-    _ body: @noescape (inout UnsafeMutableBufferPointer<Element>) throws -> R
+    invoke body: @noescape (inout UnsafeMutableBufferPointer<Element>) throws -> R
   ) rethrows -> R {
     let count = self.count
     // Ensure unique storage

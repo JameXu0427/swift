@@ -348,11 +348,11 @@ public struct ${Collection}<Base> : ${collectionForTraversal(traversal)}
 
   // TODO: swift-3-indexing-model - add docs
   public func forEach(
-    _ body: @noescape (Base.Iterator.Element.Iterator.Element) throws -> Void
+    invoke body: @noescape (Base.Iterator.Element.Iterator.Element) throws -> Void
   ) rethrows {
     // FIXME: swift-3-indexing-model: tests.
     for innerCollection in _base {
-      try innerCollection.forEach(body)
+      try innerCollection.forEach(invoke: body)
     }
   }
 

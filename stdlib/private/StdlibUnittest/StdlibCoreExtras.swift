@@ -137,7 +137,7 @@ extension TypeIdentifier
 func _forAllPermutationsImpl(
   _ index: Int, _ size: Int,
   _ perm: inout [Int], _ visited: inout [Bool],
-  _ body: ([Int]) -> Void
+  invoke body: ([Int]) -> Void
 ) {
   if index == size {
     body(perm)
@@ -150,25 +150,25 @@ func _forAllPermutationsImpl(
     }
     visited[i] = true
     perm[index] = i
-    _forAllPermutationsImpl(index + 1, size, &perm, &visited, body)
+    _forAllPermutationsImpl(index + 1, size, &perm, &visited, invoke: body)
     visited[i] = false
   }
 }
 
 /// Generate all permutations.
-public func forAllPermutations(_ size: Int, body: ([Int]) -> Void) {
+public func forAllPermutations(_ size: Int, invoke body: ([Int]) -> Void) {
   if size == 0 {
     return
   }
 
   var permutation = [Int](repeating: 0, count: size)
   var visited = [Bool](repeating: false, count: size)
-  _forAllPermutationsImpl(0, size, &permutation, &visited, body)
+  _forAllPermutationsImpl(0, size, &permutation, &visited, invoke: body)
 }
 
 /// Generate all permutations.
 public func forAllPermutations<S : Sequence>(
-  _ sequence: S, body: ([S.Iterator.Element]) -> Void
+  _ sequence: S, invoke body: ([S.Iterator.Element]) -> Void
 ) {
   let data = Array(sequence)
   forAllPermutations(data.count) {

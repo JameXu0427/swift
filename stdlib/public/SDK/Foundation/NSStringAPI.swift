@@ -76,7 +76,8 @@ extension Optional {
   /// `body` is complicated than that results in unnecessarily repeated code.
   internal func _withNilOrAddress<NSType : AnyObject, ResultType>(
     of object: inout NSType?,
-    body: @noescape (AutoreleasingUnsafeMutablePointer<NSType?>?) -> ResultType
+    invoke body:
+      @noescape (AutoreleasingUnsafeMutablePointer<NSType?>?) -> ResultType
   ) -> ResultType {
     return self == nil ? body(nil) : body(&object)
   }
@@ -119,7 +120,7 @@ extension String {
   /// memory referred to by `index`
   func _withOptionalOutParameter<Result>(
     _ index: UnsafeMutablePointer<Index>?,
-    _ body: @noescape (UnsafeMutablePointer<Int>?) -> Result
+    invoke body: @noescape (UnsafeMutablePointer<Int>?) -> Result
   ) -> Result {
     var utf16Index: Int = 0
     let result = (index != nil ? body(&utf16Index) : body(nil))
@@ -132,7 +133,7 @@ extension String {
   /// it into the memory referred to by `range`
   func _withOptionalOutParameter<Result>(
     _ range: UnsafeMutablePointer<Range<Index>>?,
-    _ body: @noescape (UnsafeMutablePointer<NSRange>?) -> Result
+    invoke body: @noescape (UnsafeMutablePointer<NSRange>?) -> Result
   ) -> Result {
     var nsRange = NSRange(location: 0, length: 0)
     let result = (range != nil ? body(&nsRange) : body(nil))
@@ -492,7 +493,9 @@ extension String {
   //     enumerateLinesUsing:(void (^)(NSString *line, BOOL *stop))block
 
   /// Enumerates all the lines in a string.
-  public func enumerateLines(_ body: (line: String, stop: inout Bool) -> ()) {
+  public func enumerateLines(
+    invoking body: (line: String, stop: inout Bool) -> ()
+  ) {
     _ns.enumerateLines {
       (line: String, stop: UnsafeMutablePointer<ObjCBool>)
     in
@@ -523,7 +526,7 @@ extension String {
     scheme tagScheme: String,
     options opts: NSLinguisticTaggerOptions = [],
     orthography: NSOrthography? = nil,
-    _ body:
+    invoking body:
       (String, Range<Index>, Range<Index>, inout Bool) -> ()
   ) {
     _ns.enumerateLinguisticTags(
@@ -556,7 +559,7 @@ extension String {
   public func enumerateSubstrings(
     in range: Range<Index>,
     options opts:NSStringEnumerationOptions = [],
-    _ body: (
+    invoking body: ( // should this be "invoking body:"?
       substring: String?, substringRange: Range<Index>,
       enclosingRange: Range<Index>, inout Bool
     ) -> ()

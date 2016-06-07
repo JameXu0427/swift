@@ -424,7 +424,7 @@ public protocol Sequence {
   ///
   /// - Parameter body: A closure that takes an element of the sequence as a
   ///   parameter.
-  func forEach(_ body: @noescape (Iterator.Element) throws -> Void) rethrows
+  func forEach(invoke body: @noescape (Iterator.Element) throws -> Void) rethrows
 
   // Note: The complexity of Sequence.dropFirst(_:) requirement
   // is documented as O(n) because Collection.dropFirst(_:) is
@@ -950,7 +950,7 @@ extension Sequence {
   /// - Parameter body: A closure that takes an element of the sequence as a
   ///   parameter.
   public func forEach(
-    _ body: @noescape (Iterator.Element) throws -> Void
+    invoke body: @noescape (Iterator.Element) throws -> Void
   ) rethrows {
     for element in self {
       try body(element)

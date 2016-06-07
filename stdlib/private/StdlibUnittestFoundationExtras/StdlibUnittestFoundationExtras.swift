@@ -24,7 +24,7 @@ extension NSLocale {
 
 public func withOverriddenNSLocaleCurrentLocale<Result>(
   _ temporaryLocale: NSLocale,
-  _ body: @noescape () -> Result
+  invoke body: @noescape () -> Result
 ) -> Result {
   let oldMethod = class_getClassMethod(
     NSLocale.self, #selector(NSLocale.current))
@@ -48,14 +48,14 @@ public func withOverriddenNSLocaleCurrentLocale<Result>(
 
 public func withOverriddenNSLocaleCurrentLocale<Result>(
   _ temporaryLocaleIdentifier: String,
-  _ body: @noescape () -> Result
+  invoke body: @noescape () -> Result
 ) -> Result {
   precondition(
     NSLocale.availableLocaleIdentifiers().contains(temporaryLocaleIdentifier),
     "requested locale \(temporaryLocaleIdentifier) is not available")
 
   return withOverriddenNSLocaleCurrentLocale(
-    NSLocale(localeIdentifier: temporaryLocaleIdentifier), body)
+    NSLocale(localeIdentifier: temporaryLocaleIdentifier), invoke: body)
 }
 
 /// Executes the `body` in an autorelease pool if the platform does not
@@ -65,7 +65,7 @@ public func withOverriddenNSLocaleCurrentLocale<Result>(
 /// return-autoreleased optimization.)
 @inline(never)
 public func autoreleasepoolIfUnoptimizedReturnAutoreleased(
-  _ body: @noescape () -> Void
+  invoking body: @noescape () -> Void
 ) {
 #if arch(i386) && (os(iOS) || os(watchOS))
   autoreleasepool(body)

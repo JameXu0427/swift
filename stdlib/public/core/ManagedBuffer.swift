@@ -45,7 +45,7 @@ public class ManagedProtoBuffer<Value, Element> : NonObjectiveCBase {
   /// - Note: This pointer is only valid for the duration of the
   ///   call to `body`.
   public final func withUnsafeMutablePointerToValue<R>(
-    _ body: (UnsafeMutablePointer<Value>) -> R
+    invoke body: (UnsafeMutablePointer<Value>) -> R
   ) -> R {
     return withUnsafeMutablePointers { (v, e) in return body(v) }
   }
@@ -56,7 +56,7 @@ public class ManagedProtoBuffer<Value, Element> : NonObjectiveCBase {
   /// - Note: This pointer is only valid for the duration of the
   ///   call to `body`.
   public final func withUnsafeMutablePointerToElements<R>(
-    _ body: (UnsafeMutablePointer<Element>) -> R
+    invoke body: (UnsafeMutablePointer<Element>) -> R
   ) -> R {
     return withUnsafeMutablePointers { return body($0.1) }
   }
@@ -67,9 +67,9 @@ public class ManagedProtoBuffer<Value, Element> : NonObjectiveCBase {
   /// - Note: These pointers are only valid for the duration of the
   ///   call to `body`.
   public final func withUnsafeMutablePointers<R>(
-    _ body: (_: UnsafeMutablePointer<Value>, _: UnsafeMutablePointer<Element>) -> R
+    invoke body: (_: UnsafeMutablePointer<Value>, _: UnsafeMutablePointer<Element>) -> R
   ) -> R {
-    return ManagedBufferPointer(self).withUnsafeMutablePointers(body)
+    return ManagedBufferPointer(self).withUnsafeMutablePointers(invoke: body)
   }
 
   //===--- internal/private API -------------------------------------------===//
@@ -257,7 +257,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   /// - Note: This pointer is only valid
   ///   for the duration of the call to `body`.
   public func withUnsafeMutablePointerToValue<R>(
-    _ body: @noescape (UnsafeMutablePointer<Value>) -> R
+    invoke body: @noescape (UnsafeMutablePointer<Value>) -> R
   ) -> R {
     return withUnsafeMutablePointers { (v, e) in return body(v) }
   }
@@ -268,7 +268,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   /// - Note: This pointer is only valid for the duration of the
   ///   call to `body`.
   public func withUnsafeMutablePointerToElements<R>(
-    _ body: (UnsafeMutablePointer<Element>) -> R
+    invoke body: (UnsafeMutablePointer<Element>) -> R
   ) -> R {
     return withUnsafeMutablePointers { return body($0.1) }
   }
@@ -279,7 +279,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   /// - Note: These pointers are only valid for the duration of the
   ///   call to `body`.
   public func withUnsafeMutablePointers<R>(
-    _ body: @noescape (_: UnsafeMutablePointer<Value>, _: UnsafeMutablePointer<Element>) -> R
+    invoke body: @noescape (_: UnsafeMutablePointer<Value>, _: UnsafeMutablePointer<Element>) -> R
   ) -> R {
     let result = body(_valuePointer, _elementPointer)
     _fixLifetime(_nativeBuffer)

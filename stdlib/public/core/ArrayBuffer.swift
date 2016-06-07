@@ -395,14 +395,14 @@ extension _ArrayBuffer {
   /// underlying contiguous storage.  If no such storage exists, it is
   /// created on-demand.
   public func withUnsafeBufferPointer<R>(
-    _ body: @noescape (UnsafeBufferPointer<Element>) throws -> R
+    invoke body: @noescape (UnsafeBufferPointer<Element>) throws -> R
   ) rethrows -> R {
     if _fastPath(_isNative) {
       defer { _fixLifetime(self) }
       return try body(
         UnsafeBufferPointer(start: firstElementAddress, count: count))
     }
-    return try ContiguousArray(self).withUnsafeBufferPointer(body)
+    return try ContiguousArray(self).withUnsafeBufferPointer(invoke: body)
   }
   
   /// Call `body(p)`, where `p` is an `UnsafeMutableBufferPointer`
@@ -410,7 +410,7 @@ extension _ArrayBuffer {
   ///
   /// - Precondition: Such contiguous storage exists or the buffer is empty.
   public mutating func withUnsafeMutableBufferPointer<R>(
-    _ body: @noescape (UnsafeMutableBufferPointer<Element>) throws -> R
+    invoke body: @noescape (UnsafeMutableBufferPointer<Element>) throws -> R
   ) rethrows -> R {
     _sanityCheck(
       _isNative || count == 0,

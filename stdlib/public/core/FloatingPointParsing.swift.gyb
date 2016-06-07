@@ -63,7 +63,7 @@ extension ${Self} {
       return (result, endPtr == nil ? 0 : UnsafePointer(endPtr!) - chars)
     }
 
-    let (result, n) = text.withCString(parseNTBS)
+    let (result, n) = text.withCString(invoke: parseNTBS)
 
     if n == 0 || n != u16.count
       || u16.contains({ $0 > 127 || _isspace_clocale($0) }) {

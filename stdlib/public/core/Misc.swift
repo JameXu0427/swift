@@ -58,7 +58,7 @@ public func _autorelease(_ x: AnyObject) {
 /// This function is primarily useful to call various runtime functions
 /// written in C++.
 func _withUninitializedString<R>(
-  _ body: (UnsafeMutablePointer<String>) -> R
+  invoke body: (UnsafeMutablePointer<String>) -> R
 ) -> (R, String) {
   let stringPtr = UnsafeMutablePointer<String>(allocatingCapacity: 1)
   let bodyResult = body(stringPtr)

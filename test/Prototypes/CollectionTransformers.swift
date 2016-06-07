@@ -233,7 +233,7 @@ struct _ForkJoinMutex {
     _mutex.deallocateCapacity(1)
   }
 
-  func withLock<Result>(_ body: @noescape () -> Result) -> Result {
+  func withLock<Result>(invoke body: @noescape () -> Result) -> Result {
     if pthread_mutex_lock(_mutex) != 0 {
       fatalError("pthread_mutex_lock")
     }

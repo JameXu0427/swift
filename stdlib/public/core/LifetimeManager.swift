@@ -13,19 +13,19 @@
 /// Evaluate `f()` and return its result, ensuring that `x` is not
 /// destroyed before f returns.
 public func withExtendedLifetime<T, Result>(
-  _ x: T, _ f: @noescape () throws -> Result
+  _ x: T, invoke body: @noescape () throws -> Result
 ) rethrows -> Result {
   defer { _fixLifetime(x) }
-  return try f()
+  return try body()
 }
 
 /// Evaluate `f(x)` and return its result, ensuring that `x` is not
 /// destroyed before f returns.
 public func withExtendedLifetime<T, Result>(
-  _ x: T, _ f: @noescape (T) throws -> Result
+  _ x: T, invoke body: @noescape (T) throws -> Result
 ) rethrows -> Result {
   defer { _fixLifetime(x) }
-  return try f(x)
+  return try body(x)
 }
 
 extension String {
@@ -41,10 +41,10 @@ extension String {
   ///   it is used as the return value of the `withCString(_:)` method.
   /// - Returns: The return value of the `f` closure, if any.
   public func withCString<Result>(
-    _ f: @noescape (UnsafePointer<Int8>) throws -> Result
+    invoke body: @noescape (UnsafePointer<Int8>) throws -> Result
   ) rethrows -> Result {
     return try self.nulTerminatedUTF8.withUnsafeBufferPointer {
-      try f(UnsafePointer($0.baseAddress!))
+      try body(UnsafePointer($0.baseAddress!))
     }
   }
 }
@@ -61,7 +61,7 @@ public func _fixLifetime<T>(_ x: T) {
 /// parameters (and default-constructible "out" parameters) by pointer.
 public func withUnsafeMutablePointer<T, Result>(
   _ arg: inout T,
-  _ body: @noescape (UnsafeMutablePointer<T>) throws -> Result
+  invoke body: @noescape (UnsafeMutablePointer<T>) throws -> Result
 ) rethrows -> Result
 {
   return try body(UnsafeMutablePointer<T>(Builtin.addressof(&arg)))
@@ -71,7 +71,7 @@ public func withUnsafeMutablePointer<T, Result>(
 public func withUnsafeMutablePointers<A0, A1, Result>(
   _ arg0: inout A0,
   _ arg1: inout A1,
-  _ body: @noescape (
+  invoke body: @noescape (
     UnsafeMutablePointer<A0>, UnsafeMutablePointer<A1>) throws -> Result
 ) rethrows -> Result {
   return try body(
@@ -85,7 +85,7 @@ public func withUnsafeMutablePointers<A0, A1, A2, Result>(
   _ arg0: inout A0,
   _ arg1: inout A1,
   _ arg2: inout A2,
-  _ body: @noescape (
+  invoke body: @noescape (
     UnsafeMutablePointer<A0>,
     UnsafeMutablePointer<A1>,
     UnsafeMutablePointer<A2>
@@ -102,7 +102,7 @@ public func withUnsafeMutablePointers<A0, A1, A2, Result>(
 /// parameters (and default-constructible "out" parameters) by pointer.
 public func withUnsafePointer<T, Result>(
   _ arg: inout T,
-  _ body: @noescape (UnsafePointer<T>) throws -> Result
+  invoke body: @noescape (UnsafePointer<T>) throws -> Result
 ) rethrows -> Result
 {
   return try body(UnsafePointer<T>(Builtin.addressof(&arg)))
@@ -112,7 +112,7 @@ public func withUnsafePointer<T, Result>(
 public func withUnsafePointers<A0, A1, Result>(
   _ arg0: inout A0,
   _ arg1: inout A1,
-  _ body: @noescape (UnsafePointer<A0>, UnsafePointer<A1>) throws -> Result
+  invoke body: @noescape (UnsafePointer<A0>, UnsafePointer<A1>) throws -> Result
 ) rethrows -> Result {
   return try body(
     UnsafePointer<A0>(Builtin.addressof(&arg0)),
@@ -125,7 +125,7 @@ public func withUnsafePointers<A0, A1, A2, Result>(
   _ arg0: inout A0,
   _ arg1: inout A1,
   _ arg2: inout A2,
-  _ body: @noescape (
+  invoke body: @noescape (
     UnsafePointer<A0>,
     UnsafePointer<A1>,
     UnsafePointer<A2>

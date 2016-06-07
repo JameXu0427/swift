@@ -66,7 +66,7 @@ public func scatter<T>(_ a: [T], _ idx: [Int]) -> [T] {
 }
 
 public func withArrayOfCStrings<R>(
-  _ args: [String], _ body: ([UnsafeMutablePointer<CChar>?]) -> R
+  _ args: [String], invoke body: ([UnsafeMutablePointer<CChar>?]) -> R
 ) -> R {
   let argsCounts = Array(args.map { $0.utf8.count + 1 })
   let argsOffsets = [ 0 ] + scan(argsCounts, 0, +)
