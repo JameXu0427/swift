@@ -274,13 +274,13 @@ public struct ${Self}<
   public func split(
     maxSplits: Int = Int.max,
     omittingEmptySubsequences: Bool = true,
-    isSeparator: @noescape (Base.Iterator.Element) throws -> Bool
+    separatedWhere isSeparator: @noescape (Base.Iterator.Element) throws -> Bool
   ) rethrows -> [SubSequence] {
     Log.split[selfType] += 1
     return try base.split(
       maxSplits: maxSplits,
       omittingEmptySubsequences: omittingEmptySubsequences,
-      isSeparator: isSeparator)
+      separatedWhere: isSeparator)
   }
 
   public func _customContainsEquatableElement(
