@@ -243,10 +243,10 @@ func checkHasPrefixHasSuffix(
       Array(String($0).unicodeScalars)
     }
   let expectHasPrefix = lhsNFDGraphemeClusters.starts(
-    with: rhsNFDGraphemeClusters, isEquivalent: (==))
+    with: rhsNFDGraphemeClusters, comparingBy: (==))
 
   let expectHasSuffix = lhsNFDGraphemeClusters.lazy.reversed()
-    .starts(with: rhsNFDGraphemeClusters.lazy.reversed(), isEquivalent: (==))
+    .starts(with: rhsNFDGraphemeClusters.lazy.reversed(), comparingBy: (==))
 
   expectEqual(expectHasPrefix, lhs.hasPrefix(rhs), stackTrace: stackTrace)
   expectEqual(
@@ -414,7 +414,7 @@ CStringTests.test("String(cString:)") {
 CStringTests.test("String.decodeCString") {
   do {
     let s = getNullCString()
-    let result = String.decodeCString(UnsafePointer(s), `as`: UTF8.self)
+    let result = String.decodeCString(UnsafePointer(s), as: UTF8.self)
     expectEmpty(result)
   }
   do { // repairing
