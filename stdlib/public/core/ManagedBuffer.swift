@@ -95,18 +95,18 @@ public class ManagedBuffer<Value, Element>
   : ManagedProtoBuffer<Value, Element> {
 
   /// Create a new instance of the most-derived class, calling
-  /// `initializeValue` on the partially-constructed object to
-  /// generate an initial `Value`.
+  /// `factory` on the partially-constructed object to generate
+  /// an initial `Value`.
   public final class func create(
     minimumCapacity: Int,
-    initialValue: (ManagedProtoBuffer<Value, Element>) -> Value
+    makingValueWith factory: (ManagedProtoBuffer<Value, Element>) -> Value
   ) -> ManagedBuffer<Value, Element> {
 
     let p = ManagedBufferPointer<Value, Element>(
       bufferClass: self,
       minimumCapacity: minimumCapacity,
-      initialValue: { buffer, _ in
-        initialValue(
+      makingValueWith: { buffer, _ in
+        factory(
           unsafeDowncast(buffer, to: ManagedProtoBuffer<Value, Element>.self))
       })
 
@@ -173,7 +173,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   /// - parameter bufferClass: The class of the object used for storage.
   /// - parameter minimumCapacity: The minimum number of `Element`s that
   ///   must be able to be stored in the new buffer.
-  /// - parameter initialValue: A function that produces the initial
+  /// - parameter factory: A function that produces the initial
   ///   `Value` instance stored in the buffer, given the `buffer`
   ///   object and a function that can be called on it to get the actual
   ///   number of allocated elements.
@@ -185,14 +185,15 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   public init(
     bufferClass: AnyClass,
     minimumCapacity: Int,
-    initialValue: (buffer: AnyObject, capacity: (AnyObject) -> Int) -> Value
+    makingValueWith factory:
+      (buffer: AnyObject, capacity: (AnyObject) -> Int) -> Value
   ) {
     self = ManagedBufferPointer(bufferClass: bufferClass, minimumCapacity: minimumCapacity)
 
     // initialize the value field
     withUnsafeMutablePointerToValue {
       $0.initialize(with: 
-        initialValue(
+        factory(
           buffer: self.buffer,
           capacity: {
             ManagedBufferPointer(unsafeBufferObject: $0).capacity
