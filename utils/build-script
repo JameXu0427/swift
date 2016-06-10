@@ -1297,50 +1297,34 @@ details of the setups of other systems or automated environments.""")
         action="store_const",
         const=True,
         dest="test")
-    run_tests_group.add_argument(
+    add_boolean_argument(
+        run_tests_group,
         "--test",
-        help="test Swift after building",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+        help="test Swift after building")
     run_tests_group.add_argument(
         "-T",
         help="run the validation test suite (implies --test)",
         action="store_const",
         const=True,
         dest="validation_test")
-    run_tests_group.add_argument(
+    add_boolean_argument(
+        run_tests_group,
         "--validation-test",
-        help="run the validation test suite (implies --test)",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+        help="run the validation test suite (implies --test)")
     run_tests_group.add_argument(
         "-o",
         help="run the test suite in optimized mode too (implies --test)",
         action="store_const",
         const=True,
         dest="test_optimized")
-    run_tests_group.add_argument(
+    add_boolean_argument(
+        run_tests_group,
         "--test-optimized",
-        help="run the test suite in optimized mode too (implies --test)",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
-    run_tests_group.add_argument(
+        help="run the test suite in optimized mode too (implies --test)")
+    add_boolean_argument(
+        run_tests_group,
         "--long-test",
-        help="run the long test suite",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+        help="run the long test suite")
     run_tests_group.add_argument(
         "--host-test",
         help="run executable tests on host devices (such as iOS or tvOS)",
@@ -1370,14 +1354,10 @@ details of the setups of other systems or automated environments.""")
         help="Use the host compiler, not the self-built one to compile the "
              "Swift runtime",
         action="store_true")
-    parser.add_argument(
+    add_boolean_argument(
+        parser,
         "--build-swift-stdlib-unittest-extra",
-        help="Build optional StdlibUnittest components",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+        help="Build optional StdlibUnittest components")
 
     run_build_group = parser.add_argument_group(
         title="Run build")
@@ -1452,14 +1432,10 @@ details of the setups of other systems or automated environments.""")
         help="skip building Swift stdlibs for Android",
         action="store_true")
 
-    run_build_group.add_argument(
+    add_boolean_argument(
+        run_build_group,
         "--skip-build-benchmarks",
-        help="skip building Swift Benchmark Suite",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+        help="skip building Swift Benchmark Suite")
 
     skip_test_group = parser.add_argument_group(
         title="Skip testing specified targets")
@@ -1703,24 +1679,16 @@ details of the setups of other systems or automated environments.""")
         type=arguments.type.shell_split,
         default=[])
 
-    parser.add_argument(
+    add_boolean_argument(
+        parser,
         "--verbose-build",
-        help="print the commands executed during the build",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+        help="print the commands executed during the build")
 
-    parser.add_argument(
+    add_boolean_argument(
+        parser,
         "--lto",
         help="use lto optimization on llvm/swift tools. This does not "
-             "imply using lto on the swift standard library or runtime",
-        metavar="BOOL",
-        nargs='?',
-        type=arguments.type.bool,
-        default=False,
-        const=True)
+             "imply using lto on the swift standard library or runtime")
 
     default_max_lto_link_job_counts = host.max_lto_link_job_counts()
     parser.add_argument(

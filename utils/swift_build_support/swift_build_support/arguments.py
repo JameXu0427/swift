@@ -26,6 +26,16 @@ __all__ = [
     "type",
 ]
 
+def add_boolean_argument(parser, name, help, default=False):
+    parser.add_argument(
+        name,
+        help=help,
+        metavar="BOOL",
+        nargs='?',
+        type=type.bool,
+        default=default,
+        const=True)
+
 
 class _Registry(object):
     pass

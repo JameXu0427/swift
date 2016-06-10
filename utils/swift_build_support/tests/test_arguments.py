@@ -23,6 +23,7 @@ except ImportError:
 
 from swift_build_support.arguments import (
     action as argaction,
+    add_boolean_argument,
     type as argtype,
 )
 
@@ -175,3 +176,26 @@ class ArgumentsActionTestCase(unittest.TestCase):
             parser.parse_args(['--list-opt', 'foo 12', '--list-opt=bar 42']),
             argparse.Namespace(
                 str_opt=None, list_opt=["foo", "12", "bar", "42"]))
+
+    def test_add_boolean_argument(self):
+        parser = argparse.ArgumentParser()
+        add_boolean_argument(parser, name="--test-default-default", help="")
+        add_boolean_argument(parser, name="--test-default-true", help="", default=True)
+        add_boolean_argument(parser, name="--test-default-false", help="", default=False)
+
+        args, unknown_args = parser.parse_known_args([])
+        self.assertEqual(args.test_default_default, False)
+        self.assertEqual(args.test_default_true, True)
+        self.assertEqual(args.test_default_false, False)
+
+        args, unknown_args = parser.parse_known_args(
+            ['--test-default-default', '0', '--test-default-true', '0', '--test-default-false', '0'])
+        self.assertEqual(args.test_default_default, False)
+        self.assertEqual(args.test_default_true, False)
+        self.assertEqual(args.test_default_false, False)
+
+        args, unknown_args = parser.parse_known_args(
+            ['--test-default-default', '1', '--test-default-true', '1', '--test-default-false', '1'])
+        self.assertEqual(args.test_default_default, True)
+        self.assertEqual(args.test_default_true, True)
+        self.assertEqual(args.test_default_false, True)
