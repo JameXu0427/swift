@@ -1373,7 +1373,11 @@ details of the setups of other systems or automated environments.""")
     parser.add_argument(
         "--build-swift-stdlib-unittest-extra",
         help="Build optional StdlibUnittest components",
-        action="store_true")
+        metavar="BOOL",
+        nargs='?',
+        type=arguments.type.bool,
+        default=False,
+        const=True)
 
     run_build_group = parser.add_argument_group(
         title="Run build")
@@ -1451,7 +1455,11 @@ details of the setups of other systems or automated environments.""")
     run_build_group.add_argument(
         "--skip-build-benchmarks",
         help="skip building Swift Benchmark Suite",
-        action="store_true")
+        metavar="BOOL",
+        nargs='?',
+        type=arguments.type.bool,
+        default=False,
+        const=True)
 
     skip_test_group = parser.add_argument_group(
         title="Skip testing specified targets")
