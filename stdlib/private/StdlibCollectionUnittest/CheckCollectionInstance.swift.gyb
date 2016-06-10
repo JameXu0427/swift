@@ -333,7 +333,7 @@ public func check${Traversal}Collection<
   let distanceCandidates: [Distance] = [
     -11, -7, -5, -3, -2, -1, 0, 1, 2, 3, 5, 7, 11]
 
-  let distances = distanceCandidates.filter { (x: Distance) -> Bool in
+  let distances = distanceCandidates.where { (x: Distance) -> Bool in
     x + offset0 >= 0 && x + offset1 <= count
   }
 

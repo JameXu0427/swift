@@ -39,7 +39,7 @@ extension LazySequenceProtocol {
       LazyMapSequence<Elements, ElementOfResult?>>,
     ElementOfResult
   > {
-    return self.map(elementTransform).filter { $0 != nil }.map { $0! }
+    return self.map(elementTransform).where { $0 != nil }.map { $0! }
   }
 }
 
@@ -74,7 +74,7 @@ extension LazyCollectionProtocol {
       LazyMapCollection<Elements, ElementOfResult?>>,
     ElementOfResult
   > {
-    return self.map(elementTransform).filter { $0 != nil }.map { $0! }
+    return self.map(elementTransform).where { $0 != nil }.map { $0! }
   }
 }
 
@@ -113,6 +113,6 @@ extension LazyCollectionProtocol
       LazyMapBidirectionalCollection<Elements, ElementOfResult?>>,
     ElementOfResult
   > {
-    return self.map(elementTransform).filter { $0 != nil }.map { $0! }
+    return self.map(elementTransform).where { $0 != nil }.map { $0! }
   }
 }

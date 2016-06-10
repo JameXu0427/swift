@@ -261,7 +261,7 @@ ArrayTestSuite.test("${array_type}/emptyAllocation") {
 ArrayTestSuite.test("${array_type}/filter") {
   do {
     let arr: ${array_type}<Int> = []
-    var result = arr.filter() {
+    var result = arr.where {
       (x: Int) -> Bool in
       expectUnreachable()
       return true
@@ -272,19 +272,19 @@ ArrayTestSuite.test("${array_type}/filter") {
   }
   do {
     let arr: ${array_type}<Int> = [ 0, 30, 10, 90 ]
-    let result = arr.filter() { (x: Int) -> Bool in true }
+    let result = arr.where { (x: Int) -> Bool in true }
     expectEqual([ 0, 30, 10, 90 ], result)
     expectGE(2 * result.count, result.capacity)
   }
   do {
     let arr: ${array_type}<Int> = [ 0, 30, 10, 90 ]
-    let result = arr.filter() { (x: Int) -> Bool in false }
+    let result = arr.where { (x: Int) -> Bool in false }
     expectEqual([], result)
     expectGE(2 * result.count, result.capacity)
   }
   do {
     let arr: ${array_type}<Int> = [ 0, 30, 10, 90 ]
-    let result = arr.filter() { $0 % 3 == 0 }
+    let result = arr.where { $0 % 3 == 0 }
     expectEqual([ 0, 30, 90 ], result)
     expectGE(2 * result.count, result.capacity)
   }
@@ -311,7 +311,7 @@ ArrayTestSuite.test("${array_type}/map") {
 }
 
 ArrayTestSuite.test("${array_type}/flatMap") {
-  let enumerate : Int -> ${array_type}<Int> =
+  let enumerate : (Int) -> ${array_type}<Int> =
     { return ${array_type}(1..<($0 + 1)) }
   expectEqualSequence([], ${array_type}().flatMap(enumerate))
   expectEqualSequence([ 1 ], ${array_type}([ 1 ]).flatMap(enumerate))
@@ -728,7 +728,7 @@ for (step, evilBoundsCheck) in [ (1, true), (-1, false), (-1, true) ] {
   .code {
     let evil = EvilCollection(step, boundsChecked: evilBoundsCheck)
 
-    let a = evil.filter { _ in true }
+    let a = evil.where { _ in true }
     _blackHole(a)
   }
 
@@ -736,7 +736,7 @@ for (step, evilBoundsCheck) in [ (1, true), (-1, false), (-1, true) ] {
   .code {
     let evil = EvilCollection(step, boundsChecked: evilBoundsCheck)
 
-    let a = evil.filter { _ in false }
+    let a = evil.where { _ in false }
     _blackHole(a)
   }
 }

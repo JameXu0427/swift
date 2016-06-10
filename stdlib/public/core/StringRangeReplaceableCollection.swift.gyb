@@ -111,7 +111,7 @@ extension String {
   ///     let str = "The rain in Spain stays mainly in the plain."
   ///
   ///     let vowels: Set<Character> = ["a", "e", "i", "o", "u"]
-  ///     let disemvoweled = String(str.characters.lazy.filter { !vowels.contains($0) })
+  ///     let disemvoweled = String(str.characters.lazy.where { !vowels.contains($0) })
   ///
   ///     print(disemvoweled)
   ///     // Prints "Th rn n Spn stys mnly n th pln."

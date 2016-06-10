@@ -859,7 +859,7 @@ internal class _CollectionTransformerStep<PipelineInputElement_, OutputElement_>
     fatalError("abstract method")
   }
 
-  func filter(suchThat predicate: (OutputElement) -> Bool)
+  func `where`(_ predicate: (OutputElement) -> Bool)
     -> _CollectionTransformerStep<PipelineInputElement, OutputElement> {
 
     fatalError("abstract method")
@@ -911,7 +911,7 @@ final internal class _CollectionTransformerStepCollectionSource<
     }
   }
 
-  override func filter(suchThat isIncluded: (InputElement) -> Bool)
+  override func `where`(_ isIncluded: (InputElement) -> Bool)
     -> _CollectionTransformerStep<PipelineInputElement, InputElement> {
 
     return _CollectionTransformerStepOneToMaybeOne(self) {
@@ -990,7 +990,7 @@ final internal class _CollectionTransformerStepOneToMaybeOne<
     }
   }
 
-  override func filter(suchThat isIncluded: (OutputElement) -> Bool)
+  override func `where`(_ isIncluded: (OutputElement) -> Bool)
     -> _CollectionTransformerStep<PipelineInputElement, OutputElement> {
 
     // Let the closure below capture only one variable, not the whole `self`.
@@ -1265,12 +1265,12 @@ public struct CollectionTransformerPipeline<
     )
   }
 
-  public func filter(suchThat isIncluded: (T) -> Bool)
+  public func `where`(_ isIncluded: (T) -> Bool)
     -> CollectionTransformerPipeline<InputCollection, T> {
 
     return CollectionTransformerPipeline<InputCollection, T>(
       _input: _input,
-      _step: _step.filter(suchThat: isIncluded)
+      _step: _step.where(isIncluded)
     )
   }
 
@@ -1323,7 +1323,7 @@ t.test("fusion/map+filter+reduce") {
   let xs = [ 1, 2, 3 ]
   let result = transform(xs)
     .map { $0 * 2 }
-    .filter { $0 != 0 }
+    .where { $0 != 0 }
     .reduce(0, { $0 + $1 })
   expectEqual(12, result)
 }

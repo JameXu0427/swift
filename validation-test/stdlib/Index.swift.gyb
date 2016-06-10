@@ -61,8 +61,7 @@ Index.test(
   "${Collection}/index(_:offsetBy:)/"
   + "avoidsSuccessorAndPredecessor/dispatch"
 ) {
-  for test in indexStepsFromTests.filter(
-    suchThat: {$0.limit == nil && $0.distance >= 0}
+  for test in indexStepsFromTests.where({$0.limit == nil && $0.distance >= 0}
   ) {
     let c = ${Collection}(Array(0..<10))
 
@@ -85,8 +84,7 @@ Index.test(
   "${Collection}/index(_:offsetBy:limitedBy:)/"
   + "avoidsSuccessorAndPredecessor/dispatch"
 ) {
-  for test in indexStepsFromTests.filter(
-    suchThat: {$0.limit != nil}
+  for test in indexStepsFromTests.where({$0.limit != nil}
   ) {
     let c = ${Collection}(Array(0..<10))
 

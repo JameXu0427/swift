@@ -150,8 +150,8 @@ internal class _AnyRandomAccessCollectionBox<Element>
     _abstract()
   }
 
-  internal func _filter(
-    suchThat isIncluded: @noescape (Element) throws -> Bool
+  internal func _where(
+    _ isIncluded: @noescape (Element) throws -> Bool
   ) rethrows -> [Element] {
     _abstract()
   }
@@ -338,10 +338,10 @@ internal final class _${Kind}Box<S : ${Kind}> : _Any${Kind}Box<S.Iterator.Elemen
   ) rethrows -> [T] {
     return try _base.map(elementTransform)
   }
-  internal override func _filter(
-    suchThat isIncluded: @noescape (Element) throws -> Bool
+  internal override func _where(
+    _ isIncluded: @noescape (Element) throws -> Bool
   ) rethrows -> [Element] {
-    return try _base.filter(suchThat: isIncluded)
+    return try _base.where(isIncluded)
   }
   internal override func _forEach(
     invoke body: @noescape (Element) throws -> Void
@@ -582,10 +582,10 @@ extension Any${Kind} {
     return try _box._map(elementTransform)
   }
 
-  public func filter(
-    suchThat isIncluded: @noescape (Element) throws -> Bool
+  public func `where`(
+     _ isIncluded: @noescape (Element) throws -> Bool
   ) rethrows -> [Element] {
-    return try _box._filter(suchThat: isIncluded)
+    return try _box._where(isIncluded)
   }
 
   public func forEach(

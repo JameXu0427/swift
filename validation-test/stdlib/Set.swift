@@ -3650,7 +3650,7 @@ SetTestSuite.test("removeAt") {
     expectEqual(2, s.count)
     expectEmpty(s.index(of: i*1010))
     let origKeys: [Int] = [1010, 2020, 3030]
-    expectEqual(origKeys.filter { $0 != (i*1010) }, [Int](s).sorted())
+    expectEqual(origKeys.where { $0 != (i*1010) }, [Int](s).sorted())
   }
 }
 

@@ -65,7 +65,7 @@ public struct LazyFilterIterator<
 /// A sequence whose elements consist of the elements of some base
 /// sequence that also satisfy a given predicate.
 ///
-/// - Note: `s.lazy.filter { ... }`, for an arbitrary sequence `s`,
+/// - Note: `s.lazy.where { ... }`, for an arbitrary sequence `s`,
 ///   is a `LazyFilterSequence`.
 public struct LazyFilterSequence<Base : Sequence>
   : LazySequenceProtocol {
@@ -297,8 +297,8 @@ extension LazySequenceProtocol {
   ///   the result is used. No buffering storage is allocated and each
   ///   traversal step invokes `predicate` on one or more underlying
   ///   elements.
-  public func filter(
-    suchThat isIncluded: (Elements.Iterator.Element) -> Bool
+  public func `where`(
+     _ isIncluded: (Elements.Iterator.Element) -> Bool
   ) -> LazyFilterSequence<Self.Elements> {
     return LazyFilterSequence(
       _base: self.elements, suchThat: isIncluded)
@@ -318,8 +318,8 @@ extension LazyCollectionProtocol
   ///   the result is used. No buffering storage is allocated and each
   ///   traversal step invokes `predicate` on one or more underlying
   ///   elements.
-  public func filter(
-    suchThat isIncluded: (Elements.Iterator.Element) -> Bool
+  public func `where`(
+     _ isIncluded: (Elements.Iterator.Element) -> Bool
   ) -> LazyFilter${collectionForTraversal(Traversal)}<Self.Elements> {
     return LazyFilter${collectionForTraversal(Traversal)}(
       _base: self.elements, suchThat: isIncluded)

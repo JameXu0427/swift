@@ -695,12 +695,12 @@ SequenceTypeTests.test("reverse/WhereIndexIsRandomAccess,RandomAccessReverseView
 }
 
 //===----------------------------------------------------------------------===//
-// filter()
+// where()
 //===----------------------------------------------------------------------===//
 
 SequenceTypeTests.test("filter/Sequence/Dispatch") {
   let tester = SequenceLog.dispatchTester([OpaqueValue(1)])
-  _ = tester.filter { _ in false }
+  _ = tester.where { _ in false }
   expectCustomizable(tester, tester.log.filter)
 }
 
@@ -719,7 +719,7 @@ SequenceTypeTests.test("filter/Sequence/Semantics") {
       let closureLifetimeTracker = LifetimeTracked(0)
       expectEqual(1, LifetimeTracked.instances)
       var timesClosureWasCalled = 0
-      var result = s.filter {
+      var result = s.where {
         (element) in
         _blackHole(closureLifetimeTracker)
         timesClosureWasCalled += 1
@@ -730,11 +730,11 @@ SequenceTypeTests.test("filter/Sequence/Semantics") {
       expectEqual([], s.map { $0.value }, "sequence should be consumed")
       expectEqual(
         test.sequence.count, timesClosureWasCalled,
-        "filter() should be eager and should only call its predicate"
+        "where() should be eager and should only call its predicate"
         + "once per element")
       expectGE(
         2 * result.count, result.capacity,
-        "filter() should not reserve capacity (it does not know how much the"
+        "where() should not reserve capacity (it does not know how much the"
         + "predicate will filter out)")
     }
   }

@@ -67,8 +67,8 @@ sequenceWrapperTests.test("Dispatch/map") {
 
 sequenceWrapperTests.test("Dispatch/filter") {
   expectWrapperDispatch(
-    direct.filter { _ in true },
-    indirect.filter { _ in true }, dispatchLog.filter)
+    direct.where { _ in true },
+    indirect.where { _ in true }, dispatchLog.filter)
 }
 
 sequenceWrapperTests.test("Dispatch/_customContainsEquatableElement") {

@@ -60,7 +60,7 @@ struct CollectionWithDefaultUnderestimatedCount : Collection {
 }
 
 //===----------------------------------------------------------------------===//
-// filter()
+// where()
 //===----------------------------------------------------------------------===//
 
 var MinimalCollectionWithCustomFilter_timesFilterWasCalled: Int = 0
@@ -109,11 +109,11 @@ struct MinimalCollectionWith${Implementation}Filter<Element>
     }
   }
 
-  func filter(
-    suchThat isIncluded: @noescape (Element) throws -> Bool
+  func `where`(
+     _ isIncluded: @noescape (Element) throws -> Bool
   ) rethrows -> [Element] {
     MinimalCollectionWithCustomFilter.timesFilterWasCalled += 1
-    return try _data.filter(suchThat: isIncluded)
+    return try _data.where(isIncluded)
   }
 
 %   end
@@ -126,7 +126,7 @@ func callStaticCollectionFilter(
   _ sequence: MinimalCollectionWithDefaultFilter<OpaqueValue<Int>>,
   suchThat isIncluded: @noescape (OpaqueValue<Int>) -> Bool
 ) -> [OpaqueValue<Int>] {
-  var result = sequence.filter(suchThat: isIncluded)
+  var result = sequence.where(isIncluded)
   expectType([OpaqueValue<Int>].self, &result)
   return result
 }
@@ -135,7 +135,7 @@ func callStaticCollectionFilter(
   _ sequence: MinimalCollectionWithCustomFilter<OpaqueValue<Int>>,
   suchThat isIncluded: @noescape (OpaqueValue<Int>) -> Bool
 ) -> [OpaqueValue<Int>] {
-  var result = sequence.filter(suchThat: isIncluded)
+  var result = sequence.where(isIncluded)
   expectType([OpaqueValue<Int>].self, &result)
   return result
 }
@@ -144,7 +144,7 @@ func callGenericCollectionFilter<S : Collection>(
   _ sequence: S,
   suchThat isIncluded: @noescape (S.Iterator.Element) -> Bool
 ) -> [S.Iterator.Element] {
-  var result = sequence.filter(suchThat: isIncluded)
+  var result = sequence.where(isIncluded)
   expectType(Array<S.Iterator.Element>.self, &result)
   return result
 }
@@ -183,10 +183,10 @@ CollectionTypeTests.test("filter/Collection/${Implementation}Implementation/${di
       expectEqual(
         test.sequence, s.map { $0.value }, "collection should not be consumed")
       expectEqual(test.sequence.count, timesClosureWasCalled,
-        "filter() should be eager and should only call its predicate once per element")
+        "where() should be eager and should only call its predicate once per element")
       expectGE(
         2 * result.count, result.capacity,
-        "filter() should not reserve capacity"
+        "where() should not reserve capacity"
         + "(it does not know how much the predicate will filter out)")
     }
   }

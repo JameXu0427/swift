@@ -228,11 +228,11 @@ public struct ${Self}<
     return try base.map(elementTransform)
   }
 
-  public func filter(
-    suchThat isIncluded: @noescape (Base.Iterator.Element) throws -> Bool
+  public func `where`(
+     _ isIncluded: @noescape (Base.Iterator.Element) throws -> Bool
   ) rethrows -> [Base.Iterator.Element] {
     Log.filter[selfType] += 1
-    return try base.filter(suchThat: isIncluded)
+    return try base.where(isIncluded)
   }
 
   public func forEach(

@@ -26,7 +26,7 @@ public func run_MonteCarloE(scale: Int) {
     let pos = Int(UInt(truncatingBitPattern: Random())%UInt(N))
     intervals[pos] = true
   }
-  let numEmptyIntervals = intervals.filter{!$0}.count
+  let numEmptyIntervals = intervals.where{!$0}.count
   // If there are no empty intervals, then obviously the random generator is
   // not 'random' enough.
   CheckResults(numEmptyIntervals != N,

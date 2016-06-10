@@ -1026,9 +1026,7 @@ extension TestSuite {
     //===------------------------------------------------------------------===//
 
     self.test("\(testNamePrefix).removeFirst()/slice/semantics") {
-      for test in removeFirstTests.filter(
-        suchThat: { $0.numberToRemove == 1 }
-      ) {
+      for test in removeFirstTests.where({ $0.numberToRemove == 1 }) {
         let c = makeWrappedCollection(test.collection.map(OpaqueValue.init))
         var slice = c[c.startIndex..<c.endIndex]
         let survivingIndices = _allIndices(
@@ -1127,9 +1125,7 @@ extension TestSuite {
 
     self.test("\(testNamePrefix).popFirst()/slice/semantics") {
       // This can just reuse the test data for removeFirst()
-      for test in removeFirstTests.filter(
-        suchThat: { $0.numberToRemove == 1 }
-      ) {
+      for test in removeFirstTests.where({ $0.numberToRemove == 1 }) {
         let c = makeWrappedCollection(test.collection.map(OpaqueValue.init))
         var slice = c[c.startIndex..<c.endIndex]
         let survivingIndices = _allIndices(
@@ -1223,7 +1219,7 @@ extension TestSuite {
     //===------------------------------------------------------------------===//
 
     self.test("\(testNamePrefix).removeLast()/slice/semantics") {
-      for test in removeLastTests.filter(suchThat: { $0.numberToRemove == 1 }) {
+      for test in removeLastTests.where({ $0.numberToRemove == 1 }) {
         let c = makeWrappedCollection(test.collection)
         var slice = c[c.startIndex..<c.endIndex]
         let survivingIndices = _allIndices(
@@ -1329,7 +1325,7 @@ extension TestSuite {
 
     self.test("\(testNamePrefix).popLast()/slice/semantics") {
       // This can just reuse the test data for removeLast()
-      for test in removeLastTests.filter(suchThat: { $0.numberToRemove == 1 }) {
+      for test in removeLastTests.where({ $0.numberToRemove == 1 }) {
         let c = makeWrappedCollection(test.collection)
         var slice = c[c.startIndex..<c.endIndex]
         let survivingIndices = _allIndices(
@@ -1566,8 +1562,7 @@ extension TestSuite {
     }
 
     self.test("\(testNamePrefix)/index(_:stepsFrom: n)/semantics") {
-      for test in indexStepsFromTests.filter(
-        suchThat: {$0.limit == nil && $0.distance >= 0}
+      for test in indexStepsFromTests.where({$0.limit == nil && $0.distance >= 0}
       ) {
         let c = toCollection(0..<10)
 
@@ -1586,8 +1581,8 @@ extension TestSuite {
 
     if !collectionIsBidirectional {
       self.test("\(testNamePrefix)/index(_:stepsFrom: -n)/semantics") {
-        for test in indexStepsFromTests.filter(
-          suchThat: {$0.limit == nil && $0.distance < 0}
+        for test in indexStepsFromTests.where(
+          {$0.limit == nil && $0.distance < 0}
         ) {
           let c = toCollection(0..<10)
           let start = c.nthIndex(test.startOffset)
@@ -1596,8 +1591,8 @@ extension TestSuite {
         }
       }
       self.test("\(testNamePrefix)/advance(by: -n, limitedBy:)/semantics") {
-        for test in indexStepsFromTests.filter(
-          suchThat: {$0.limit != nil && $0.distance < 0}
+        for test in indexStepsFromTests.where(
+          {$0.limit != nil && $0.distance < 0}
         ) {
           let c = toCollection(0..<10)
           let limit = c.nthIndex(test.limit.unsafelyUnwrapped)
@@ -1610,8 +1605,8 @@ extension TestSuite {
     }
 
     self.test("\(testNamePrefix)/advance(by: n, limitedBy:)/semantics") {
-      for test in indexStepsFromTests.filter(
-        suchThat: {$0.limit != nil && $0.distance >= 0}
+      for test in indexStepsFromTests.where(
+        {$0.limit != nil && $0.distance >= 0}
       ) {
         let c = toCollection(0..<20)
         let limit = c.nthIndex(test.limit.unsafelyUnwrapped)

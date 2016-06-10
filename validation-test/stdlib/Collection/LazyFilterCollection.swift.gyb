@@ -21,12 +21,12 @@ variations = [('', 'Sequence'), ('', 'Collection'), ('Bidirectional', 'Collectio
 % for (traversal, kind) in variations:
 CollectionTests.add${traversal}${kind}Tests(
   make${kind}: { (elements: [OpaqueValue<Int>]) -> LazyFilter${traversal}${kind}<Minimal${traversal}${kind}<OpaqueValue<Int>>> in
-    Minimal${traversal}${kind}(elements: elements).lazy.filter { _ in return true }
+    Minimal${traversal}${kind}(elements: elements).lazy.where { _ in return true }
   },
   wrapValue: identity,
   extractValue: identity,
   make${kind}OfEquatable: { (elements: [MinimalEquatableValue]) -> LazyFilter${traversal}${kind}<Minimal${traversal}${kind}<MinimalEquatableValue>> in
-    Minimal${traversal}${kind}(elements: elements).lazy.filter { _ in return true }
+    Minimal${traversal}${kind}(elements: elements).lazy.where { _ in return true }
   },
   wrapValueIntoEquatable: identityEq,
   extractValueFromEquatable: identityEq
@@ -38,7 +38,7 @@ CollectionTests.add${traversal}${kind}Tests(
 CollectionTests.add${traversal}${kind}Tests(
   make${kind}: { (elements: [LifetimeTracked]) -> LazyFilter${traversal}${kind}<Minimal${traversal}${kind}<LifetimeTracked>> in
     // FIXME: create a better sequence and filter
-    Minimal${traversal}${kind}(elements: elements).lazy.filter { _ in return true }
+    Minimal${traversal}${kind}(elements: elements).lazy.where { _ in return true }
   },
   wrapValue: { (element: OpaqueValue<Int>) in
     LifetimeTracked(element.value, identity: element.identity)
@@ -48,7 +48,7 @@ CollectionTests.add${traversal}${kind}Tests(
   },
   make${kind}OfEquatable: { (elements: [LifetimeTracked]) -> LazyFilter${traversal}${kind}<Minimal${traversal}${kind}<LifetimeTracked>> in
     // FIXME: create a better sequence and filter
-    Minimal${traversal}${kind}(elements: elements).lazy.filter { _ in return true }
+    Minimal${traversal}${kind}(elements: elements).lazy.where { _ in return true }
   },
   wrapValueIntoEquatable: { (element: MinimalEquatableValue) in
     LifetimeTracked(element.value, identity: element.identity)
@@ -68,16 +68,16 @@ CollectionTests.test("LazyFilterCollection instances (${traversal}${kind})") {
 % if kind == 'Sequence':
     checkSequence(
       expected,
-      MinimalSequence(elements: base).lazy.filter { _ in return false })
+      MinimalSequence(elements: base).lazy.where { _ in return false })
 % elif traversal == '' and kind == 'Collection':
     checkForwardCollection(
       expected,
-      MinimalCollection(elements: base).lazy.filter { _ in return false },
+      MinimalCollection(elements: base).lazy.where { _ in return false },
       sameValue: { $0 == $1 })
 % else:
     check${traversal}${kind}(
       expected,
-      Minimal${traversal}${kind}(elements: base).lazy.filter { _ in return false },
+      Minimal${traversal}${kind}(elements: base).lazy.where { _ in return false },
       sameValue: { $0 == $1 })
 % end
   }
@@ -87,16 +87,16 @@ CollectionTests.test("LazyFilterCollection instances (${traversal}${kind})") {
 % if kind == 'Sequence':
     checkSequence(
       expected,
-      MinimalSequence(elements: base).lazy.filter { _ in return true })
+      MinimalSequence(elements: base).lazy.where { _ in return true })
 % elif traversal == '' and kind == 'Collection':
     checkForwardCollection(
       expected,
-      MinimalCollection(elements: base).lazy.filter { _ in return true },
+      MinimalCollection(elements: base).lazy.where { _ in return true },
       sameValue: { $0 == $1 })
 % else:
     check${traversal}${kind}(
       expected,
-      Minimal${traversal}${kind}(elements: base).lazy.filter { _ in return true },
+      Minimal${traversal}${kind}(elements: base).lazy.where { _ in return true },
       sameValue: { $0 == $1 })
 % end
   }
@@ -112,17 +112,16 @@ CollectionTests.test("LazyFilterCollection instances (${traversal}${kind})") {
 % if kind == 'Sequence':
     checkSequence(
       expected,
-      MinimalSequence(elements: base).lazy.filter(suchThat: predicate))
+      MinimalSequence(elements: base).lazy.where(predicate))
 % elif traversal == '' and kind == 'Collection':
     checkForwardCollection(
       expected,
-      MinimalCollection(elements: base).lazy.filter(suchThat: predicate),
+      MinimalCollection(elements: base).lazy.where(predicate),
       sameValue: { $0 == $1 })
 % else:
     check${traversal}${kind}(
       expected,
-      Minimal${traversal}${kind}(elements: base).lazy.filter(
-        suchThat: predicate),
+      Minimal${traversal}${kind}(elements: base).lazy.where(predicate),
       sameValue: { $0 == $1 })
 % end
   }

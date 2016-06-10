@@ -398,10 +398,10 @@ internal struct _UnmanagedAnyObjectArray {
 ///
 ///     let morePrimes = primes.union([11, 13, 17, 19])
 ///
-///     let laterPrimes = morePrimes.filter { $0 > 10 }
+///     let laterPrimes = morePrimes.where { $0 > 10 }
 ///     // 'laterPrimes' is of type Array<Int>
 ///
-///     let laterPrimesSet = Set(morePrimes.filter { $0 > 10 })
+///     let laterPrimesSet = Set(morePrimes.where { $0 > 10 })
 ///     // 'laterPrimesSet' is of type Set<Int>
 ///
 /// Bridging Between Set and NSSet
@@ -742,7 +742,7 @@ public struct Set<Element : Hashable> :
   /// you can create a new set by using this initializer.
   ///
   ///     let primes: Set = [2, 3, 5, 7, 11, 13, 17, 19, 23]
-  ///     let laterPrimes = Set(primes.lazy.filter { $0 > 10 })
+  ///     let laterPrimes = Set(primes.lazy.where { $0 > 10 })
   ///     print(laterPrimes)
   ///     // Prints "[17, 19, 23, 11, 13]"
   ///

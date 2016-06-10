@@ -39,13 +39,13 @@ func notPostfix() {
 
 class C {
   func map(_ x: (Int) -> Int) -> C { return self }
-  func filter(_ x: (Int) -> Bool) -> C { return self }
+  func `where`(_ x: (Int) -> Bool) -> C { return self }
 }
 
-var a = C().map {$0 + 1}.filter {$0 % 3 == 0}
+var a = C().map {$0 + 1}.where {$0 % 3 == 0}
 
 var b = C().map {$0 + 1}
-  .filter {$0 % 3 == 0}
+  .where {$0 % 3 == 0}
 
 var c = C().map
 {

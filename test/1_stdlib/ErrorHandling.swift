@@ -305,7 +305,7 @@ ErrorHandlingTests.test("ErrorHandling/Sequence filter") {
       let sequence = [Noisy(), Noisy(), Noisy()]
       var loopCount = 0
       do {
-        let result: [Noisy] = try sequence.filter { _ in
+        let result: [Noisy] = try sequence.where { _ in
           if loopCount == throwAtCount {
             throw SillyError.JazzHands
           }

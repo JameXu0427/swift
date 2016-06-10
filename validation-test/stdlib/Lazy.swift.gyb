@@ -1034,7 +1034,7 @@ tests.test("LazyFilterSequence") {
   let base = (0..<100).map(OpaqueValue.init)
 
   var calls = 0
-  var filtered = MinimalSequence(elements: base).lazy.filter {
+  var filtered = MinimalSequence(elements: base).lazy.where {
     x in calls += 1;
     return x.value % 2 == 0
   }
@@ -1053,7 +1053,7 @@ tests.test("LazyFilterSequence") {
   // Check that it works when the first element doesn't satisfy the predicate
   let odds = stride(from: 1, to: 100, by: 2).map(OpaqueValue.init)
   filtered =
-    MinimalSequence(elements: base).lazy.filter { $0.value % 2 != 0 }
+    MinimalSequence(elements: base).lazy.where { $0.value % 2 != 0 }
   checkSequence(odds, filtered, resiliencyChecks: .none) {
     $0.value == $1.value
   }
@@ -1073,14 +1073,14 @@ tests.test("LazyFilterSequence") {
   expectEqual(200, calls)
 
   checkFilterIteratorBase(
-    MinimalSequence(elements: base).lazy.filter { $0.value % 2 == 0 },
-    MinimalSequence(elements: base).lazy.filter { $0.value % 2 != 0 })
+    MinimalSequence(elements: base).lazy.where { $0.value % 2 == 0 },
+    MinimalSequence(elements: base).lazy.where { $0.value % 2 != 0 })
 }
 
 tests.test("LazyFilterIndex/base") {
   let base = MinimalCollection(elements: (0..<100).map(OpaqueValue.init))
-  let evens = base.lazy.filter { $0.value % 2 == 0 }
-  let odds = base.lazy.filter { $0.value % 2 != 0 }
+  let evens = base.lazy.where { $0.value % 2 == 0 }
+  let odds = base.lazy.where { $0.value % 2 != 0 }
 
   expectEqual(base.startIndex, evens.startIndex.base)
   expectEqual(base.index(after: base.startIndex), odds.startIndex.base)
@@ -1098,7 +1098,7 @@ tests.test("LazyFilterCollection") {
   let base = MinimalCollection(elements: (0..<100).map(OpaqueValue.init))
 
   var calls = 0
-  let filtered = base.lazy.filter {
+  let filtered = base.lazy.where {
     x in calls += 1;
     return x.value % 2 == 0
   }
@@ -1122,8 +1122,8 @@ tests.test("LazyFilterCollection") {
   expectGE(oldCalls + 2, calls)
 
   checkFilterIteratorBase(
-    base.lazy.filter { $0.value % 2 == 0 },
-    base.lazy.filter { $0.value % 2 != 0 })
+    base.lazy.where { $0.value % 2 == 0 },
+    base.lazy.where { $0.value % 2 != 0 })
 }
 
 tests.test("LazyFilterSequence/AssociatedTypes") {
@@ -1165,21 +1165,21 @@ tests.test("lazy.filter/TypeInference") {
   let baseArray: [OpaqueValue<Int>] = (0..<10).map(OpaqueValue.init)
   do {
     var filtered = MinimalSequence(elements: baseArray)
-      .lazy.filter { _ in true }
+      .lazy.where { _ in true }
     expectType(
       LazyFilterSequence<MinimalSequence<OpaqueValue<Int>>>.self,
       &filtered)
   }
   do {
     var filtered = MinimalCollection(elements: baseArray)
-      .lazy.filter { _ in true }
+      .lazy.where { _ in true }
     expectType(
       LazyFilterCollection<MinimalCollection<OpaqueValue<Int>>>.self,
       &filtered)
   }
   do {
     var filtered = MinimalBidirectionalCollection(elements: baseArray)
-      .lazy.filter { _ in true }
+      .lazy.where { _ in true }
     expectType(
       LazyFilterBidirectionalCollection<
         MinimalBidirectionalCollection<OpaqueValue<Int>>
@@ -1188,7 +1188,7 @@ tests.test("lazy.filter/TypeInference") {
   }
   do {
     var filtered = MinimalRandomAccessCollection(elements: baseArray)
-      .lazy.filter { _ in true }
+      .lazy.where { _ in true }
     expectType(
       LazyFilterBidirectionalCollection<
         MinimalRandomAccessCollection<OpaqueValue<Int>>

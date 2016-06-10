@@ -656,7 +656,7 @@ func r23036383(arr : [Int]?) {
   }
 
   let numbers = [1, 2]
-  for _ in numbers.filter {$0 > 4} {  // expected-error {{trailing closure requires parentheses for disambiguation in this context}} {{12-12=(}} {{35-35=)}}
+  for _ in numbers.where {$0 > 4} {  // expected-error {{trailing closure requires parentheses for disambiguation in this context}} {{12-12=(}} {{34-34=)}}
   }
 }
 

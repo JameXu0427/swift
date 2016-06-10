@@ -259,8 +259,7 @@ print("all done.")
 CollectionTests.test("first/performance") {
   // accessing `first` should not perform duplicate work on lazy collections
   var log: [Int] = []
-  let col_ = (0..<10).lazy.filter(
-    suchThat: { log.append($0); return (2..<8).contains($0) })
+  let col_ = (0..<10).lazy.where({ log.append($0); return (2..<8).contains($0) })
   let col = CollectionOnly(base: col_)
   expectEqual(2, col.first)
   expectEqual([0, 1, 2], log)
