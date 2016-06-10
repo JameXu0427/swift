@@ -1297,7 +1297,7 @@ details of the setups of other systems or automated environments.""")
         action="store_const",
         const=True,
         dest="test")
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         run_tests_group,
         "--test",
         help="test Swift after building")
@@ -1307,7 +1307,7 @@ details of the setups of other systems or automated environments.""")
         action="store_const",
         const=True,
         dest="validation_test")
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         run_tests_group,
         "--validation-test",
         help="run the validation test suite (implies --test)")
@@ -1317,11 +1317,11 @@ details of the setups of other systems or automated environments.""")
         action="store_const",
         const=True,
         dest="test_optimized")
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         run_tests_group,
         "--test-optimized",
         help="run the test suite in optimized mode too (implies --test)")
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         run_tests_group,
         "--long-test",
         help="run the long test suite")
@@ -1354,7 +1354,7 @@ details of the setups of other systems or automated environments.""")
         help="Use the host compiler, not the self-built one to compile the "
              "Swift runtime",
         action="store_true")
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         parser,
         "--build-swift-stdlib-unittest-extra",
         help="Build optional StdlibUnittest components")
@@ -1432,7 +1432,7 @@ details of the setups of other systems or automated environments.""")
         help="skip building Swift stdlibs for Android",
         action="store_true")
 
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         run_build_group,
         "--skip-build-benchmarks",
         help="skip building Swift Benchmark Suite")
@@ -1679,12 +1679,12 @@ details of the setups of other systems or automated environments.""")
         type=arguments.type.shell_split,
         default=[])
 
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         parser,
         "--verbose-build",
         help="print the commands executed during the build")
 
-    add_boolean_argument(
+    arguments.add_boolean_argument(
         parser,
         "--lto",
         help="use lto optimization on llvm/swift tools. This does not "
