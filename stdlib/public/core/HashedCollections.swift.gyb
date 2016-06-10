@@ -2505,10 +2505,10 @@ final internal class _Native${Self}StorageImpl<${TypeParameters}> :
   // All underscored functions are unsafe and need a _fixLifetime in the caller.
   internal var _body: _HashedContainerStorageHeader {
     unsafeAddress {
-      return UnsafePointer(buffer._valuePointer)
+      return UnsafePointer(buffer._headerPointer)
     }
     unsafeMutableAddress {
-      return buffer._valuePointer
+      return buffer._headerPointer
     }
   }
 
@@ -2601,7 +2601,7 @@ final internal class _Native${Self}StorageImpl<${TypeParameters}> :
       }
     }
 %end
-    buffer._valuePointer.deinitialize()
+    buffer._headerPointer.deinitialize()
     _fixLifetime(self)
   }
 }

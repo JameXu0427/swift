@@ -20,32 +20,32 @@ public class NonObjectiveCBase {
   public init() {}
 }
 
-/// A base class of `ManagedBuffer<Value, Element>`, used during
+/// A base class of `ManagedBuffer<Header, Element>`, used during
 /// instance creation.
 ///
 /// During instance creation, in particular during
 /// `ManagedBuffer.create`'s call to initialize, `ManagedBuffer`'s
-/// `value` property is as-yet uninitialized, and therefore
+/// `header` property is as-yet uninitialized, and therefore
 /// `ManagedProtoBuffer` does not offer access to the as-yet
-/// uninitialized `value` property of `ManagedBuffer`.
-public class ManagedProtoBuffer<Value, Element> : NonObjectiveCBase {
+/// uninitialized `header` property of `ManagedBuffer`.
+public class ManagedProtoBuffer<Header, Element> : NonObjectiveCBase {
   /// The actual number of elements that can be stored in this object.
   ///
-  /// This value may be nontrivial to compute; it is usually a good
-  /// idea to store this information in the "value" area when
+  /// This header may be nontrivial to compute; it is usually a good
+  /// idea to store this information in the "header" area when
   /// an instance is created.
   public final var capacity: Int {
-    let p = ManagedBufferPointer<Value, Element>(self)
+    let p = ManagedBufferPointer<Header, Element>(self)
     return p.capacity
   }
 
   /// Call `body` with an `UnsafeMutablePointer` to the stored
-  /// `Value`.
+  /// `Header`.
   ///
   /// - Note: This pointer is only valid for the duration of the
   ///   call to `body`.
-  public final func withUnsafeMutablePointerToValue<R>(
-    invoke body: (UnsafeMutablePointer<Value>) -> R
+  public final func withUnsafeMutablePointerToHeader<R>(
+    invoke body: (UnsafeMutablePointer<Header>) -> R
   ) -> R {
     return withUnsafeMutablePointers { (v, e) in return body(v) }
   }
@@ -61,13 +61,13 @@ public class ManagedProtoBuffer<Value, Element> : NonObjectiveCBase {
     return withUnsafeMutablePointers { return body($0.1) }
   }
 
-  /// Call `body` with `UnsafeMutablePointer`s to the stored `Value`
+  /// Call `body` with `UnsafeMutablePointer`s to the stored `Header`
   /// and raw `Element` storage.
   ///
   /// - Note: These pointers are only valid for the duration of the
   ///   call to `body`.
   public final func withUnsafeMutablePointers<R>(
-    invoke body: (_: UnsafeMutablePointer<Value>, _: UnsafeMutablePointer<Element>) -> R
+    invoke body: (_: UnsafeMutablePointer<Header>, _: UnsafeMutablePointer<Element>) -> R
   ) -> R {
     return ManagedBufferPointer(self).withUnsafeMutablePointers(invoke: body)
   }
@@ -80,57 +80,57 @@ public class ManagedProtoBuffer<Value, Element> : NonObjectiveCBase {
   }
 }
 
-/// A class whose instances contain a property of type `Value` and raw
+/// A class whose instances contain a property of type `Header` and raw
 /// storage for an array of `Element`, whose size is determined at
 /// instance creation.
 ///
 /// Note that the `Element` array is suitably-aligned **raw memory**.
 /// You are expected to construct and---if necessary---destroy objects
 /// there yourself, using the APIs on `UnsafeMutablePointer<Element>`.
-/// Typical usage stores a count and capacity in `Value` and destroys
+/// Typical usage stores a count and capacity in `Header` and destroys
 /// any live elements in the `deinit` of a subclass.
 /// - Note: Subclasses must not have any stored properties; any storage
-///   needed should be included in `Value`.
-public class ManagedBuffer<Value, Element>
-  : ManagedProtoBuffer<Value, Element> {
+///   needed should be included in `Header`.
+public class ManagedBuffer<Header, Element>
+  : ManagedProtoBuffer<Header, Element> {
 
   /// Create a new instance of the most-derived class, calling
   /// `factory` on the partially-constructed object to generate
-  /// an initial `Value`.
+  /// an initial `Header`.
   public final class func create(
     minimumCapacity: Int,
-    makingValueWith factory: (ManagedProtoBuffer<Value, Element>) -> Value
-  ) -> ManagedBuffer<Value, Element> {
+    makingHeaderWith factory: (ManagedProtoBuffer<Header, Element>) -> Header
+  ) -> ManagedBuffer<Header, Element> {
 
-    let p = ManagedBufferPointer<Value, Element>(
+    let p = ManagedBufferPointer<Header, Element>(
       bufferClass: self,
       minimumCapacity: minimumCapacity,
-      makingValueWith: { buffer, _ in
+      makingHeaderWith: { buffer, _ in
         factory(
-          unsafeDowncast(buffer, to: ManagedProtoBuffer<Value, Element>.self))
+          unsafeDowncast(buffer, to: ManagedProtoBuffer<Header, Element>.self))
       })
 
-    return unsafeDowncast(p.buffer, to: ManagedBuffer<Value, Element>.self)
+    return unsafeDowncast(p.buffer, to: ManagedBuffer<Header, Element>.self)
   }
 
-  /// Destroy the stored Value.
+  /// Destroy the stored Header.
   deinit {
-    ManagedBufferPointer(self).withUnsafeMutablePointerToValue { $0.deinitialize() }
+    ManagedBufferPointer(self).withUnsafeMutablePointerToHeader { $0.deinitialize() }
   }
 
-  /// The stored `Value` instance.
-  public final var value: Value {
+  /// The stored `Header` instance.
+  public final var header: Header {
     unsafeAddress {
-      return ManagedBufferPointer(self).withUnsafeMutablePointerToValue { UnsafePointer($0) }
+      return ManagedBufferPointer(self).withUnsafeMutablePointerToHeader { UnsafePointer($0) }
     }
     unsafeMutableAddress {
-      return ManagedBufferPointer(self).withUnsafeMutablePointerToValue { $0 }
+      return ManagedBufferPointer(self).withUnsafeMutablePointerToHeader { $0 }
     }
   }
 }
 
 /// Contains a buffer object, and provides access to an instance of
-/// `Value` and contiguous storage for an arbitrary number of
+/// `Header` and contiguous storage for an arbitrary number of
 /// `Element` instances stored in that buffer.
 ///
 /// For most purposes, the `ManagedBuffer` class works fine for this
@@ -140,7 +140,7 @@ public class ManagedBuffer<Value, Element>
 ///
 /// A valid buffer class is non-`@objc`, with no declared stored
 ///   properties.  Its `deinit` must destroy its
-///   stored `Value` and any constructed `Element`s.
+///   stored `Header` and any constructed `Element`s.
 ///
 /// Example Buffer Class
 /// --------------------
@@ -149,49 +149,49 @@ public class ManagedBuffer<Value, Element>
 ///        typealias Manager = ManagedBufferPointer<(Int, String), Element>
 ///        deinit {
 ///          Manager(unsafeBufferObject: self).withUnsafeMutablePointers {
-///            (pointerToValue, pointerToElements) -> Void in
+///            (pointerToHeader, pointerToElements) -> Void in
 ///            pointerToElements.deinitialize(count: self.count)
-///            pointerToValue.deinitialize()
+///            pointerToHeader.deinitialize()
 ///          }
 ///        }
 ///
-///        // All properties are *computed* based on members of the Value
+///        // All properties are *computed* based on members of the Header
 ///        var count: Int {
-///          return Manager(unsafeBufferObject: self).value.0
+///          return Manager(unsafeBufferObject: self).header.0
 ///        }
 ///        var name: String {
-///          return Manager(unsafeBufferObject: self).value.1
+///          return Manager(unsafeBufferObject: self).header.1
 ///        }
 ///      }
 ///
 @_fixed_layout
-public struct ManagedBufferPointer<Value, Element> : Equatable {
+public struct ManagedBufferPointer<Header, Element> : Equatable {
 
-  /// Create with new storage containing an initial `Value` and space
+  /// Create with new storage containing an initial `Header` and space
   /// for at least `minimumCapacity` `element`s.
   ///
   /// - parameter bufferClass: The class of the object used for storage.
   /// - parameter minimumCapacity: The minimum number of `Element`s that
   ///   must be able to be stored in the new buffer.
   /// - parameter factory: A function that produces the initial
-  ///   `Value` instance stored in the buffer, given the `buffer`
+  ///   `Header` instance stored in the buffer, given the `buffer`
   ///   object and a function that can be called on it to get the actual
   ///   number of allocated elements.
   ///
   /// - Precondition: `minimumCapacity >= 0`, and the type indicated by
   ///   `bufferClass` is a non-`@objc` class with no declared stored
   ///   properties.  The `deinit` of `bufferClass` must destroy its
-  ///   stored `Value` and any constructed `Element`s.
+  ///   stored `Header` and any constructed `Element`s.
   public init(
     bufferClass: AnyClass,
     minimumCapacity: Int,
-    makingValueWith factory:
-      (buffer: AnyObject, capacity: (AnyObject) -> Int) -> Value
+    makingHeaderWith factory:
+      (buffer: AnyObject, capacity: (AnyObject) -> Int) -> Header
   ) {
     self = ManagedBufferPointer(bufferClass: bufferClass, minimumCapacity: minimumCapacity)
 
-    // initialize the value field
-    withUnsafeMutablePointerToValue {
+    // initialize the header field
+    withUnsafeMutablePointerToHeader {
       $0.initialize(with: 
         factory(
           buffer: self.buffer,
@@ -200,14 +200,14 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
           }))
     }
     // FIXME: workaround for <rdar://problem/18619176>.  If we don't
-    // access value somewhere, its addressor gets linked away
-    _ = value
+    // access header somewhere, its addressor gets linked away
+    _ = header
   }
 
   /// Manage the given `buffer`.
   ///
   /// - Precondition: `buffer` is an instance of a non-`@objc` class whose
-  ///   `deinit` destroys its stored `Value` and any constructed `Element`s.
+  ///   `deinit` destroys its stored `Header` and any constructed `Element`s.
   public init(unsafeBufferObject buffer: AnyObject) {
     ManagedBufferPointer._checkValidBufferClass(buffer.dynamicType)
 
@@ -228,13 +228,13 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
     self._nativeBuffer = Builtin.castToNativeObject(buffer)
   }
 
-  /// The stored `Value` instance.
-  public var value: Value {
+  /// The stored `Header` instance.
+  public var header: Header {
     unsafeAddress {
-      return UnsafePointer(_valuePointer)
+      return UnsafePointer(_headerPointer)
     }
     unsafeMutableAddress {
-      return _valuePointer
+      return _headerPointer
     }
   }
 
@@ -246,19 +246,19 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   /// The actual number of elements that can be stored in this object.
   ///
   /// This value may be nontrivial to compute; it is usually a good
-  /// idea to store this information in the "value" area when
+  /// idea to store this information in the "header" area when
   /// an instance is created.
   public var capacity: Int {
     return (_capacityInBytes &- _My._elementOffset) / strideof(Element)
   }
 
   /// Call `body` with an `UnsafeMutablePointer` to the stored
-  /// `Value`.
+  /// `Header`.
   ///
   /// - Note: This pointer is only valid
   ///   for the duration of the call to `body`.
-  public func withUnsafeMutablePointerToValue<R>(
-    invoke body: @noescape (UnsafeMutablePointer<Value>) -> R
+  public func withUnsafeMutablePointerToHeader<R>(
+    invoke body: @noescape (UnsafeMutablePointer<Header>) -> R
   ) -> R {
     return withUnsafeMutablePointers { (v, e) in return body(v) }
   }
@@ -274,15 +274,15 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
     return withUnsafeMutablePointers { return body($0.1) }
   }
 
-  /// Call `body` with `UnsafeMutablePointer`s to the stored `Value`
+  /// Call `body` with `UnsafeMutablePointer`s to the stored `Header`
   /// and raw `Element` storage.
   ///
   /// - Note: These pointers are only valid for the duration of the
   ///   call to `body`.
   public func withUnsafeMutablePointers<R>(
-    invoke body: @noescape (_: UnsafeMutablePointer<Value>, _: UnsafeMutablePointer<Element>) -> R
+    invoke body: @noescape (_: UnsafeMutablePointer<Header>, _: UnsafeMutablePointer<Element>) -> R
   ) -> R {
-    let result = body(_valuePointer, _elementPointer)
+    let result = body(_headerPointer, _elementPointer)
     _fixLifetime(_nativeBuffer)
     return result
   }
@@ -304,7 +304,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
 
   //===--- internal/private API -------------------------------------------===//
 
-  /// Create with new storage containing space for an initial `Value`
+  /// Create with new storage containing space for an initial `Header`
   /// and at least `minimumCapacity` `element`s.
   ///
   /// - parameter bufferClass: The class of the object used for storage.
@@ -314,7 +314,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   /// - Precondition: `minimumCapacity >= 0`, and the type indicated by
   ///   `bufferClass` is a non-`@objc` class with no declared stored
   ///   properties.  The `deinit` of `bufferClass` must destroy its
-  ///   stored `Value` and any constructed `Element`s.
+  ///   stored `Header` and any constructed `Element`s.
   internal init(
     bufferClass: AnyClass,
     minimumCapacity: Int
@@ -353,9 +353,9 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
 
   /// Manage the given `buffer`.
   ///
-  /// - Note: It is an error to use the `value` property of the resulting
+  /// - Note: It is an error to use the `header` property of the resulting
   ///   instance unless it has been initialized.
-  internal init(_ buffer: ManagedProtoBuffer<Value, Element>) {
+  internal init(_ buffer: ManagedProtoBuffer<Header, Element>) {
     _nativeBuffer = Builtin.castToNativeObject(buffer)
   }
 
@@ -369,7 +369,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
       || (
         !creating
         && _class_getInstancePositiveExtentSize(bufferClass)
-          == _valueOffset + sizeof(Value.self)),
+          == _headerOffset + sizeof(Header.self)),
       "ManagedBufferPointer buffer class has illegal stored properties"
     )
     _debugPrecondition(
@@ -386,7 +386,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
       || (
         !creating
         && _class_getInstancePositiveExtentSize(bufferClass)
-          == _valueOffset + sizeof(Value.self)),
+          == _headerOffset + sizeof(Header.self)),
       "ManagedBufferPointer buffer class has illegal stored properties"
     )
     _sanityCheck(
@@ -399,7 +399,7 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   internal static var _alignmentMask: Int {
     return max(
       alignof(_HeapObject.self),
-      max(alignof(Value.self), alignof(Element.self))) &- 1
+      max(alignof(Header.self), alignof(Element.self))) &- 1
   }
 
   /// The actual number of bytes allocated for this object.
@@ -412,20 +412,20 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
     return UnsafePointer(Builtin.bridgeToRawPointer(_nativeBuffer))
   }
 
-  /// Offset from the allocated storage for `self` to the stored `Value`
-  internal static var _valueOffset: Int {
+  /// Offset from the allocated storage for `self` to the stored `Header`
+  internal static var _headerOffset: Int {
     _onFastPath()
     return _roundUp(
       sizeof(_HeapObject.self),
-      toAlignment: alignof(Value.self))
+      toAlignment: alignof(Header.self))
   }
 
-  /// An **unmanaged** pointer to the storage for the `Value`
+  /// An **unmanaged** pointer to the storage for the `Header`
   /// instance.  Not safe to use without _fixLifetime calls to
   /// guarantee it doesn't dangle
-  internal var _valuePointer: UnsafeMutablePointer<Value> {
+  internal var _headerPointer: UnsafeMutablePointer<Header> {
     _onFastPath()
-    return UnsafeMutablePointer(_address + _My._valueOffset)
+    return UnsafeMutablePointer(_address + _My._headerOffset)
   }
 
   /// An **unmanaged** pointer to the storage for `Element`s.  Not
@@ -440,16 +440,16 @@ public struct ManagedBufferPointer<Value, Element> : Equatable {
   internal static var _elementOffset: Int {
     _onFastPath()
     return _roundUp(
-      _valueOffset + sizeof(Value.self),
+      _headerOffset + sizeof(Header.self),
       toAlignment: alignof(Element.self))
   }
 
   internal var _nativeBuffer: Builtin.NativeObject
 }
 
-public func == <Value, Element>(
-  lhs: ManagedBufferPointer<Value, Element>,
-  rhs: ManagedBufferPointer<Value, Element>
+public func == <Header, Element>(
+  lhs: ManagedBufferPointer<Header, Element>,
+  rhs: ManagedBufferPointer<Header, Element>
 ) -> Bool {
   return lhs._address == rhs._address
 }
